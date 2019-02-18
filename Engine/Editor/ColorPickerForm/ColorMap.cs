@@ -5,6 +5,8 @@ using Point = System.Drawing.Point;
 using Color = System.Drawing.Color;
 using Rectangle = System.Drawing.Rectangle;
 using System.Threading;
+using System;
+using System.Diagnostics;
 
 namespace Editor
 {
@@ -36,16 +38,16 @@ namespace Editor
         {
             lock (_bitmapLock)
             {
-
                 lockBitmap.LockBits();
-                for (int y = 0; y < Size.Height; y++)
+
+                Parallel.For(0, Size.Height, new Action<int>((y) =>
                 {
-                    for (int x = 0; x < Size.Width; x++)
+                    Parallel.For(0, Size.Width, new Action<int>((x) =>
                     {
-                        Color rgb = Engine.Extensions.ColorFromHSV(hue, (float)x / Size.Width, (float)y / Size.Height);
+                        Color rgb = Extensions.ColorFromHSV(hue, (float)x / Size.Width, (float)y / Size.Height);
                         lockBitmap.SetPixel(x, y, rgb);
-                    }
-                }
+                    }));
+                }));
                 lockBitmap.UnlockBits();
             }
             lock (_bitmapLock)
@@ -66,9 +68,6 @@ namespace Editor
             GenerateColorMap(0);
 
             Task.Factory.StartNew(ColorMapUpdater);
-            /*generationThread = new Thread(() => Update());
-            generationThread.IsBackground = true;
-            generationThread.Start();*/
         }
 
         void ColorMapUpdater()
@@ -88,11 +87,11 @@ namespace Editor
                         myProgress = trackbarProgress;
                     }
                     GenerateColorMap(myProgress);
-                    Thread.Sleep(10);
+                    Thread.Sleep(5);
                 }
                 else
                 {
-                    Thread.Sleep(100);
+                    Thread.Sleep(20);
                 }
             }
         }
@@ -126,8 +125,8 @@ namespace Editor
         {
             if (e.Button == MouseButtons.Left)
             {
-                var x = Engine.Extensions.Clamp(e.Location.X, 0, base.Size.Width - 1);
-                var y = Engine.Extensions.Clamp(e.Location.Y, 0, base.Size.Height - 1);
+                var x = Extensions.Clamp(e.Location.X, 0, base.Size.Width - 1);
+                var y = Extensions.Clamp(e.Location.Y, 0, base.Size.Height - 1);
                 dotPosition = new Point(x, y);
                 UpdateColorMap();
                 Invalidate();

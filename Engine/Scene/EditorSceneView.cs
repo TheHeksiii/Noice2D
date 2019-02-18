@@ -43,6 +43,17 @@ namespace Engine
                 }
             }
         }
+        public int GetGameObjectIndex(int ID)
+        {
+            for (int i = 0; i < gameObjects.Count; i++)
+            {
+                if (gameObjects[i].ID == ID)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
         public void OnGameObjectCreated(GameObject gameObject)
         {
             if (gameObject is SilentGameObject)
@@ -173,7 +184,7 @@ namespace Engine
 
                 if (closestGameObject != null && minDistance < 100)
                 {
-                    transformHandle.transform = closestGameObject.Transform;
+                    transformHandle.transform = closestGameObject.transform;
                     transformHandle.objectSelected = true;
                     //transformHandle.Enabled = true;
                 }
@@ -222,7 +233,7 @@ namespace Engine
             colliderEditor = new ColliderEditor();
             GameObject transformHandleGameObject = new GameObject();
             transformHandleGameObject.AddComponent<TransformHandle>();
-            transformHandleGameObject.name = "Transform Handle";
+            transformHandleGameObject.Name = "Transform Handle";
 
             var CameraGO = new GameObject(name: "Camera");
             camera = CameraGO.AddComponent<Camera>();
@@ -243,7 +254,7 @@ namespace Engine
             }
             gameObject.selected = true;
 
-            transformHandle.transform = gameObject.Transform;
+            transformHandle.transform = gameObject.transform;
             transformHandle.objectSelected = true;
         }
         protected override void Initialize()
@@ -350,7 +361,7 @@ namespace Engine
                         }
                         else
                         {
-                            box.GetComponent<BoxCollider>().rect = new RectangleF(Vector2.Zero, MouseInput.Position - box.Transform.Position);
+                            box.GetComponent<BoxCollider>().rect = new RectangleF(Vector2.Zero, MouseInput.Position - box.transform.Position);
                         }
                         break;
                     case Tools.ToolTypes.Line:
@@ -369,11 +380,11 @@ namespace Engine
                         else
                         {
                             // im making 0 from 0
-                            line.Transform.Rotation = Angle.FromVector(line.Transform.Position -
+                            line.transform.Rotation = Angle.FromVector(line.transform.Position -
                                 MouseInput.Position).Radians;
                             line.GetComponent<LineCollider>().length = Vector2.Distance(
                                 MouseInput.Position,
-                                line.Transform.Position);
+                                line.transform.Position);
                         }
                         break;
                 }
@@ -381,8 +392,8 @@ namespace Engine
             else if (drawingLine == true)// mouse released
             {
                 drawingLine = false;
-                line.Transform.Rotation = Angle.FromVector(line.Transform.Position - MouseInput.Position).Radians;
-                line.GetComponent<LineCollider>().length = Vector2.Distance(MouseInput.Position, line.Transform.Position);
+                line.transform.Rotation = Angle.FromVector(line.transform.Position - MouseInput.Position).Radians;
+                line.GetComponent<LineCollider>().length = Vector2.Distance(MouseInput.Position, line.transform.Position);
             }
             else if (drawingBox == true)// mouse released
             {
@@ -438,8 +449,8 @@ namespace Engine
                     gameObjects[i].Draw(spriteBatch);
                 }
             }
+            transformHandle.gameObject.Draw(spriteBatch);
             spriteBatch.End();
-
             if (Global.EditorAttached)
             {
                 uiBatch.Begin();

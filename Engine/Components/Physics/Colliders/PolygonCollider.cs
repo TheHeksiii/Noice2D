@@ -92,7 +92,7 @@ namespace Scripts
 
                 Vector2 originalPoint = OriginalPoints[i];
 
-                Points[i] = new Vector2(originalPoint.X * (float)Math.Cos(angle) - originalPoint.Y * (float)Math.Sin(angle), originalPoint.X * (float)Math.Sin(angle) + originalPoint.Y * (float)Math.Cos(angle));
+                Points[i] = new Vector2(originalPoint.X * (float)Math.Cos(-angle) - originalPoint.Y * (float)Math.Sin(-angle), originalPoint.X * (float)Math.Sin(-angle) + originalPoint.Y * (float)Math.Cos(-angle));
             }
             BuildEdges();
         }

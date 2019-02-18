@@ -18,7 +18,6 @@ namespace Scripts
             if (gameObject == null || boxCollider == null) { return; }
 
             boxCollider.rect.Position = transform.Position;
-            
             if (Fill)
             {
                 batch.FillRectangle(boxCollider.rect, Color);

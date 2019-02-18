@@ -10,6 +10,6 @@ namespace Scripts
 {
     public class CircleCollider : Collider
     {
-        public float Radius { get { return transform.Scale.MaxVectorMember(); } set { if (gameObject != null) { transform.Scale = new Vector2(value, value); } } }
+        [ShowInEditor] public float Radius { get { return transform.Scale.MaxVectorMember(); } set { if (gameObject != null) { transform.Scale = new Vector2(value, value); } } }
     }
 }

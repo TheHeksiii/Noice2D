@@ -26,8 +26,8 @@ namespace Scripts
         [System.Xml.Serialization.XmlIgnore]
         public Transform transform
         {
-            get { return gameObject.Transform; }
-            set { gameObject.Transform = value; }
+            get { return gameObject.transform; }
+            set { gameObject.transform = value; }
         }
         public virtual bool Enabled { get; set; } = true;
 

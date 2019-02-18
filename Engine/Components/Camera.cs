@@ -32,6 +32,7 @@ namespace Engine
 
 
         [ShowInEditor] public float Zoom { get; set; }
+        [ShowInEditor] public float Rotation { get; set; }
 
 
         public Matrix StaticMatrix;
@@ -42,7 +43,8 @@ namespace Engine
                 return Matrix.CreateTranslation(-(int)transform.Position.X,
                    -(int)transform.Position.Y, 0) *
                    //Matrix.CreateRotationZ(Rotation) *
-                   Matrix.CreateScale(new Vector3(Zoom, Zoom, 1));
+                   Matrix.CreateScale(new Vector3(Zoom, Zoom, 1)) *
+                Matrix.CreateRotationY(Rotation);
             }
         }
 

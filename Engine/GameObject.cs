@@ -19,6 +19,32 @@ namespace Engine
     [XmlRootAttribute("GameObject")]
     public class GameObject
     {
+        [XmlIgnore]
+        public GameObject Parent
+        {
+            get
+            {
+                int index = EditorSceneView.GetInstance().GetGameObjectIndex(parentID);
+                if (index != -1)
+                { return EditorSceneView.GetInstance().gameObjects[index]; }
+                else
+                {
+                    return null;
+                }
+            }
+            set
+            {
+                int index = EditorSceneView.GetInstance().GetGameObjectIndex(parentID);
+
+                parentID = (int)value.ID;
+                if (index != -1)
+                {
+                    EditorSceneView.GetInstance().gameObjects[EditorSceneView.GetInstance().GetGameObjectIndex(parentID)] = value;
+                }
+            }
+        }
+        public int parentID { get; set; } = -1;
+
         public bool updateWhenDisabled = false;
         private object ComponentsLock = new object();
         public delegate void ComponentAdded(GameObject gameObject, Component component);
@@ -32,8 +58,8 @@ namespace Engine
 
         [System.ComponentModel.DefaultValue(false)]
         public bool Awoken { get; set; } = false;
-        public int? ID = null;
-        public string name = "";
+        public int? ID { get; set; } = null;
+        [ShowInEditor] public string Name { get; set; } = "";
         public bool selected = false;
 
         public bool Active { get; set; } = true;
@@ -42,14 +68,16 @@ namespace Engine
         [XmlElement("Components")]
         public List<Component> Components = new List<Component>();
 
-        public Transform Transform { get; set; }
+        public List<GameObject> GameObjects = new List<GameObject>();
+
+        public Transform transform { get; set; }
 
         public bool silentInScene;
 
 
         public GameObject()
         {
-            this.name = "Game Object";
+            this.Name = "Game Object";
 
 
             TryToAddToGameObjectsList();
@@ -66,17 +94,17 @@ namespace Engine
         }
         public GameObject(Vector2? position = null, Vector2? scale = null, string name = "", bool linkComponents = true)
         {
-            this.name = name;
+            this.Name = name;
 
-            Transform = AddComponent<Transform>();
+            transform = AddComponent<Transform>();
 
             if (position != null)
             {
-                Transform.Position = position.Value;
+                transform.Position = position.Value;
             }
             if (position != null)
             {
-                Transform.Scale = scale.Value;
+                transform.Scale = scale.Value;
             }
 
             if (linkComponents)
@@ -89,6 +117,13 @@ namespace Engine
             IDsManager.gameObjectNextID++;
 
             TryToAddToGameObjectsList();
+        }
+        public void SetParent(GameObject par)
+        {
+            transform.Rotation -= par.transform.Rotation;
+            transform.Position = par.transform.Position + (par.transform.Position - transform.Position);
+            transform.initialAngleDifferenceFromParent = transform.Rotation - par.transform.Rotation;
+            Parent = par;
         }
         public void LinkComponents(GameObject gameObject, Component component)
         {
@@ -168,7 +203,7 @@ namespace Engine
                 PropertyInfo transformFieldInfo = componentFields[0].FieldType.GetProperty("transform");
 
                 gameObjectFieldInfo.SetValue(component, Convert.ChangeType(this, gameObjectFieldInfo.PropertyType), null);
-                transformFieldInfo.SetValue(component, Convert.ChangeType(Transform, transformFieldInfo.PropertyType), null);
+                transformFieldInfo.SetValue(component, Convert.ChangeType(transform, transformFieldInfo.PropertyType), null);
             }
         }
 
@@ -182,9 +217,9 @@ namespace Engine
         public virtual void Awake()
         {
 
-            if (Transform == null)
+            if (transform == null)
             {
-                Transform = AddComponent<Transform>();
+                transform = AddComponent<Transform>();
             }
 
             for (int i = 0; i < Components.Count; i++)
@@ -348,11 +383,11 @@ namespace Engine
 
         public Vector2 TransformToWorld(Vector2 localPoint)
         {
-            return localPoint + Transform.Position;
+            return localPoint + transform.Position;
         }
         public Vector2 TransformToLocal(Vector2 worldPoint)
         {
-            return worldPoint - Transform.Position;
+            return worldPoint - transform.Position;
         }
     }
 }

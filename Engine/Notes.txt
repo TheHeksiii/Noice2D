@@ -1,19 +1,13 @@
 ﻿ALT+F na prejdenie do suboru
 ALT+R find all references
 CTRL+K find all REFERENCES
-ALT-D go to declaration
 ALT-Q quick info
 
-do gameObject updatu,if canUpdate
+add to engine-sound generator,animator-both will use timeline;
+image editor;
 
-potom pri reloadovani scriptov ulozit komponent, a po pridani noveho len skopirovat udaje
-so somehow, when adding new component after gameobject is awoken, delegate ?loses? componentAwake method reference
 
 button pre profiler otvori novy form-
 dockable environment- main form na pozadie, tam sa budu dockovat formy
 https://stackoverflow.com/questions/23714353/docking-a-winform-inside-another-winform
 pri posuvani-dragovani-sa opacita da na 70%
-
-
-
-v Hierarchy property COntextMenuStrip mozem priamo pridaat

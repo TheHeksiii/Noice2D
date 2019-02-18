@@ -13,6 +13,7 @@ using ButtonState = System.Windows.Forms.ButtonState;
 using System.Drawing;
 using Editor;
 using Engine;
+using System.IO;
 
 namespace Editor
 {
@@ -129,4 +130,39 @@ namespace Editor
             return value;
         }
     }
+    public class TextureEditor : UITypeEditor
+    {
+        public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
+        {
+            return UITypeEditorEditStyle.Modal;
+        }
+        public override bool GetPaintValueSupported(ITypeDescriptorContext context)
+        {
+            return true;
+        }
+        public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
+        {
+            if (context == null || context.Instance == null || provider == null)
+            {
+                return base.EditValue(context, provider, value);
+            }
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                DialogResult dialogResult = openFileDialog.ShowDialog();
+                if (dialogResult == DialogResult.OK)
+                {
+                    string assetsPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Assets");
+                    Directory.CreateDirectory(assetsPath);
+
+                    File.Copy(openFileDialog.FileName, Path.Combine(assetsPath, openFileDialog.SafeFileName), overwrite: true);
+                    var scene = EditorSceneView.GetInstance();
+                    System.IO.Stream stream = TitleContainer.OpenStream(Path.Combine("Assets", openFileDialog.SafeFileName));
+                    value = Texture2D.FromStream(scene.GraphicsDevice, stream);
+                }
+
+            }
+            return value;
+        }
+    }
 }
+

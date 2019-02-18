@@ -116,6 +116,12 @@ namespace Editor
                 }
                 InspectorWindow.Refresh();
             }
+            if (InspectorWindow.SelectedGridItem?.Value is Vector2)
+            {
+                InspectorWindow.SelectedGridItem.PropertyDescriptor.SetValue(InspectorWindow.SelectedObject,
+                    (Vector2)InspectorWindow.SelectedGridItem.Value + new Vector2(e.Delta, e.Delta) / 1000f);
+                InspectorWindow.Refresh();
+            }
         }
 
         public void OpenGameView()
@@ -166,7 +172,14 @@ namespace Editor
                         Hierarchy.Nodes[i].Checked = ((GameObject)Hierarchy.Nodes[i].Tag).Active;
                         for (int j = 0; j < Hierarchy.Nodes[i].Nodes.Count; j++)
                         {
-                            Hierarchy.Nodes[i].Nodes[j].Checked = ((Component)Hierarchy.Nodes[i].Nodes[j].Tag).Enabled;
+                            if (Hierarchy.Nodes[i].Nodes[j].Tag is Component)
+                            {
+                                Hierarchy.Nodes[i].Nodes[j].Checked = ((Component)Hierarchy.Nodes[i].Nodes[j].Tag).Enabled;
+                            }
+                            else if (Hierarchy.Nodes[i].Nodes[j].Tag is GameObject)
+                            {
+                                Hierarchy.Nodes[i].Nodes[j].Checked = ((GameObject)Hierarchy.Nodes[i].Nodes[j].Tag).Active;
+                            }
                         }
                     }
                 }
@@ -187,12 +200,13 @@ namespace Editor
                     {
                         for (int j = 0; j < Hierarchy.Nodes[i].Nodes.Count; j++)
                         {
+                            if (Hierarchy.Nodes[i].Nodes[j].Tag is Component == false) { continue; }
                             if (gameObject.Components.Contains((Component)Hierarchy.Nodes[i].Nodes[j].Tag) == false)
                             {
                                 Hierarchy.Nodes[i].Nodes[j].Remove();
                             }
                         }
-                        gameObjectNode.Nodes.Add(new TreeNode()
+                        gameObjectNode.Nodes.Add(new HierarchyNode()
                         {
                             Tag = component,
                             Text = component.ToString(),
@@ -206,33 +220,25 @@ namespace Editor
 
         public void OnGameObjectCreated(object sender, GameObject gameObject)
         {
+            if (gameObject.parentID != -1) { return; }
             if (gameObject.silentInScene == true) { return; }
             BeginInvoke((Action)(() =>
             {
                 gameObject.OnComponentAdded += OnComponentAdded;
-                TreeNode[] componentNodes = new TreeNode[gameObject.Components.Count];//we create node for every component
+                HierarchyNode[] componentNodes = new HierarchyNode[gameObject.Components.Count];//we create node for every component
 
-                TreeNode gameObjectNode;//we create GameObject node which will hold other componentNodes
+                HierarchyNode gameObjectNode;//we create GameObject node which will hold other componentNodes
 
 
-                Hierarchy.Nodes.Add(gameObjectNode = new TreeNode()
+                Hierarchy.Nodes.Add(gameObjectNode = new HierarchyNode()
                 {
                     Tag = gameObject,
-                    Text = gameObject.name.ToString(),
-                    Checked = gameObject.Active
+                    Text = gameObject.Name.ToString(),
+                    Checked = gameObject.Active,
+                    ForeColor = EditorStyle.GameObjectNodeForeColor
                 });
-
-                for (int i = 0; i < componentNodes.Length; i++)
-                {
-                    componentNodes[i] = new TreeNode()
-                    {
-                        Tag = gameObject.Components[i],
-                        Text = gameObject.Components[i].ToString(),
-                        Checked = gameObject.Components[i].Enabled
-                    };
-                }
-
-                gameObjectNode.Nodes.AddRange(componentNodes);
+                gameObjectNode.ForeColor = Color.FromArgb(66, 206, 244);
+                AddGameObjectNodeChildren(gameObjectNode);
             }));
         }
 
@@ -290,8 +296,114 @@ namespace Editor
             comp.Awake();
 
         }
+        private void AddGameObjectNodeChildren(HierarchyNode gameObjectNode)
+        {
+            if (gameObjectNode.GameObject != null)
+            {
+                gameObjectNode.Nodes.Clear();
+
+                HierarchyNode[] componentNodes = new HierarchyNode[gameObjectNode.GameObject.Components.Count];//we create node for every component
+
+                for (int i = 0; i < gameObjectNode.GameObject.Components.Count; i++)
+                {
+                    componentNodes[i] = new HierarchyNode()
+                    {
+                        Tag = gameObjectNode.GameObject.Components[i],
+                        Text = gameObjectNode.GameObject.Components[i].ToString(),
+                        Checked = gameObjectNode.GameObject.Components[i].Enabled
+                    };
+                }
+
+                for (int i = 0; i < gameObjectNode.GameObject.GameObjects.Count; i++)
+                {
+                    var childNode = new HierarchyNode()
+                    {
+                        Tag = gameObjectNode.GameObject.GameObjects[i],
+                        Text = gameObjectNode.GameObject.GameObjects[i].Name.ToString(),
+                        Checked = gameObjectNode.GameObject.GameObjects[i].Active,
+                        ForeColor = EditorStyle.GameObjectNodeForeColor
+                    };
+                    gameObjectNode.Nodes.Add(childNode);
+
+                    AddGameObjectNodeChildren(childNode);
+                }
+                gameObjectNode.Nodes.AddRange(componentNodes);
+            }
+
+        }
+        HierarchyNode draggedGameObjectNode;
+
+        private void Hierarchy_MouseUp(object sender, MouseEventArgs e)
+        {
+            if (draggedGameObjectNode == null)
+            {
+                return;
+            }
+            if (Hierarchy.GetNodeAt(e.Location) == null)
+            {
+                EditorConsole.Log(draggedGameObjectNode.GameObject.Name + " added to global group");
+
+                Hierarchy.Nodes.Remove(draggedGameObjectNode);
+                Hierarchy.Nodes.Add(draggedGameObjectNode);
+
+                Hierarchy.SelectedNode = draggedGameObjectNode;
+
+                draggedGameObjectNode = null;
+            }
+            else if (Hierarchy.GetNodeAt(e.Location).Tag is GameObject)
+            {
+                HierarchyNode destinationNode = (HierarchyNode)Hierarchy.GetNodeAt(e.Location);
+                GameObject parent = (GameObject)destinationNode.Tag;
+                if (draggedGameObjectNode.Tag != parent)
+                {
+                    EditorConsole.Log(draggedGameObjectNode.GameObject.Name + " added to " + parent.Name);
+                    parent.GameObjects.Add(draggedGameObjectNode.GameObject);
+
+                    draggedGameObjectNode.GameObject.SetParent(parent);
+
+                    AddNodeToNewParent(childGameObject: draggedGameObjectNode.GameObject, parent: destinationNode);
+                    AddGameObjectNodeChildren(destinationNode);
+                    Hierarchy.Nodes.Remove(draggedGameObjectNode);
+
+                    Hierarchy.SelectedNode = draggedGameObjectNode;
+                    draggedGameObjectNode = null;
+                }
+            }
+            void AddNodeToNewParent(GameObject childGameObject, HierarchyNode parent)
+            {
+                HierarchyNode gameObjectNode;//we create GameObject node which will hold other componentNodes
+
+                parent.Nodes.Add(gameObjectNode = new HierarchyNode()
+                {
+                    Tag = childGameObject,
+                    Text = childGameObject.Name.ToString(),
+                    Checked = childGameObject.Active
+                });
+
+                HierarchyNode[] childNodes = new HierarchyNode[childGameObject.GameObjects.Count];//we create node for every component
+
+                for (int i = 0; i < childGameObject.GameObjects.Count; i++)
+                {
+                    childNodes[i] = new HierarchyNode()
+                    {
+                        Tag = childGameObject.GameObjects[i],
+                        Text = childGameObject.GameObjects[i].ToString(),
+                        Checked = childGameObject.GameObjects[i].Active
+                    };
+                }
+
+                gameObjectNode.Nodes.AddRange(childNodes);
+            }
+        }
         private void Hierarchy_MouseDown(object sender, MouseEventArgs e)
         {
+            if (e.Button == MouseButtons.Left)
+            {
+                if (Hierarchy.GetNodeAt(e.Location)?.Tag is GameObject)
+                {
+                    draggedGameObjectNode = (HierarchyNode)Hierarchy.GetNodeAt(e.Location);
+                }
+            }
             if (e.Button == MouseButtons.Right)
             {
                 // Submenu stuff
@@ -406,7 +518,7 @@ namespace Editor
 
         private async void button1_ClickAsync(object sender, EventArgs e)
         {
-            SaveScene(this,null);
+            //SaveScene(this, null);
             ScriptsManager.CompileScriptsAssembly();
 
             List<Type> componentTypes = ScriptsManager.ScriptsAssembly.GetTypes().Where(t => t.IsSubclassOf(typeof(Component))).ToList();
@@ -430,7 +542,7 @@ namespace Editor
                     }
                 }
             }
-            LoadScene(this, null);
+            //LoadScene(this, null);
 
         }
 
@@ -438,5 +550,6 @@ namespace Editor
         {
             EditorConsole.Clear();
         }
+
     }
 }
