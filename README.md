@@ -11,4 +11,4 @@ Engine features **editor** that consists of
 
 # Quick particle system showcase
 
-[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/T2ail8fKtb4&/0.jpg)](https://www.youtube.com/watch?v=T2ail8fKtb4&)
+[![IMAGE ALT TEXT HERE](https://img.youtube.com/vi/T2ail8fKtb4/0.jpg)](https://www.youtube.com/watch?v=T2ail8fKtb4&)
