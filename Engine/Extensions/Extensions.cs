@@ -71,6 +71,30 @@ public static class Extensions
     {
         return new Microsoft.Xna.Framework.Color(color.R, color.G, color.B, color.A);
     }
+    public static Microsoft.Xna.Framework.Color ColorFromHSVToXna(double hue, double saturation, double value)
+    {
+        int hi = Convert.ToInt32(Math.Floor(hue / 60)) % 6;
+        double f = hue / 60 - Math.Floor(hue / 60);
+
+        value = value * 255;
+        int v = Convert.ToInt32(value);
+        int p = Convert.ToInt32(value * (1 - saturation));
+        int q = Convert.ToInt32(value * (1 - f * saturation));
+        int t = Convert.ToInt32(value * (1 - (1 - f) * saturation));
+
+        if (hi == 0)
+            return new Microsoft.Xna.Framework.Color(v, t, p, 255);
+        else if (hi == 1)
+            return new Microsoft.Xna.Framework.Color(q, v, p, 255);
+        else if (hi == 2)
+            return new Microsoft.Xna.Framework.Color(p, v, t, 255);
+        else if (hi == 3)
+            return new Microsoft.Xna.Framework.Color(p, q, v, 255);
+        else if (hi == 4)
+            return new Microsoft.Xna.Framework.Color(t, p, v, 255);
+        else
+            return new Microsoft.Xna.Framework.Color(v, p, q, 255);
+    }
     public static Color ColorFromHSV(double hue, double saturation, double value)
     {
         int hi = Convert.ToInt32(Math.Floor(hue / 60)) % 6;
@@ -99,6 +123,14 @@ public static class Extensions
     {
         if (value < min) { return min; }
         if (value > max) { return max; }
+        return value;
+    }
+    public static Vector2 Clamp(Vector2 value, float minX, float maxX, float minY, float maxY)
+    {
+        if (value.X < minX) { value.X = minX; }
+        if (value.X > maxX) { value.X = maxX; }
+        if (value.Y < minY) { value.Y = minY; }
+        if (value.Y > maxY) { value.Y = maxY; }
         return value;
     }
     public static float Clamp(float value, float min, float max)
@@ -133,7 +165,6 @@ public static class Extensions
     public static float AngleBetween(Vector2 vector1, Vector2 vector2)
     {
         float returnAngle = (float)Math.Acos(Vector2.Dot(vector1, vector2) / (vector1.Length() * vector2.Length()));
-
         if (returnAngle == float.NaN)
         {
             returnAngle = 0;

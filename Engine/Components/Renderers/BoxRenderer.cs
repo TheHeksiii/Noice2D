@@ -16,7 +16,6 @@ namespace Scripts
         public override void Draw(SpriteBatch batch)
         {
             if (gameObject == null || boxCollider == null) { return; }
-
             boxCollider.rect.Position = transform.Position;
             if (Fill)
             {

@@ -34,7 +34,10 @@ namespace Engine
         }
         public static void StartPhysics()
         {
-            physicsTask = Task.Factory.StartNew(FixedUpdate);
+            if (Running == false)
+            {
+                physicsTask = Task.Factory.StartNew(FixedUpdate);
+            }
         }
         private static void ResetVelocities()
         {

@@ -72,37 +72,29 @@ namespace Engine
 
         public Transform transform { get; set; }
 
-        public bool silentInScene;
-
-
-        public GameObject()
+        void Setup()
         {
-            this.Name = "Game Object";
+            transform = AddComponent<Transform>();
+            OnDestroyed += RemoveFromLists;
 
+            ID = IDsManager.gameObjectNextID;
+            IDsManager.gameObjectNextID++;
 
             TryToAddToGameObjectsList();
-
-            OnComponentAdded = LinkComponents;
-
-            OnDestroyed = RemoveFromLists;
-
-            if (ID == null)
-            {
-                ID = IDsManager.gameObjectNextID;
-                IDsManager.gameObjectNextID++;
-            }
+        }
+        public GameObject()
+        {
+            Setup();
         }
         public GameObject(Vector2? position = null, Vector2? scale = null, string name = "", bool linkComponents = true)
         {
             this.Name = name;
-
-            transform = AddComponent<Transform>();
-
+            Setup();
             if (position != null)
             {
                 transform.Position = position.Value;
             }
-            if (position != null)
+            if (scale != null)
             {
                 transform.Scale = scale.Value;
             }
@@ -111,12 +103,7 @@ namespace Engine
             {
                 OnComponentAdded += LinkComponents;
             }
-            OnDestroyed += RemoveFromLists;
-
-            ID = IDsManager.gameObjectNextID;
-            IDsManager.gameObjectNextID++;
-
-            TryToAddToGameObjectsList();
+            
         }
         public void SetParent(GameObject par)
         {
@@ -209,10 +196,10 @@ namespace Engine
 
         private void TryToAddToGameObjectsList()
         {
-            if (silentInScene == false)
-            {
-                EditorSceneView.GetInstance().OnGameObjectCreated(this);
-            }
+            //if (silentInScene == false)
+            //{
+            EditorSceneView.GetInstance().OnGameObjectCreated(this);
+            //}
         }
         public virtual void Awake()
         {
@@ -272,6 +259,8 @@ namespace Engine
 
         public virtual void Update()
         {
+            if (Active == false && updateWhenDisabled == false)
+            { return; }
             if (destroy == true)
             {
                 destroyTimer -= Time.deltaTime;
@@ -311,9 +300,33 @@ namespace Engine
         public void RemoveComponent(int index)
         {
             Active = false;
+            Components[index].OnDestroyed();
             Components.RemoveAt(index);
             Active = true;
 
+        }
+        public void RemoveComponent<T>() where T : Component
+        {
+            for (int i = 0; i < Components.Count; i++)
+            {
+                if (Components[i] is T)
+                {
+                    Components[i].OnDestroyed();
+                    Components.RemoveAt(i);
+                }
+            }
+        }
+        public void RemoveComponent(Type type)
+        {
+            for (int i = 0; i < Components.Count; i++)
+            {
+                if (Components[i].GetType() == type)
+                {
+                    Components[i].OnDestroyed();
+                    Components.RemoveAt(i);
+                    return;
+                }
+            }
         }
         public T GetComponent<T>(int? index = null) where T : Component
         {
@@ -346,7 +359,17 @@ namespace Engine
             }
             return componentsToReturn;
         }
-
+        public Component GetComponent(Type type)
+        {
+            for (int i = 0; i < Components.Count; i++)
+            {
+                if (Components[i].GetType() == type)
+                {
+                    return Components[i];
+                }
+            }
+            return null;
+        }
         public List<Component> GetComponents(Type type)
         {
             List<Component> componentsToReturn = new List<Component>();
@@ -374,6 +397,7 @@ namespace Engine
         }
         public void Draw(SpriteBatch batch)
         {
+            if (Active == false) { return; }
             for (int i = 0; i < Components.Count; i++)
             {
                 if (Components[i] is Renderer && Components[i].Enabled && Components[i].Awoken && Active)

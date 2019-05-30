@@ -6,10 +6,15 @@ using System.Collections.Generic;
 using MonoGame.Extended;
 using Scripts;
 using Editor;
+using System.Linq;
+using System.Threading.Tasks;
+using System.Diagnostics;
+
 namespace Engine
 {
     public class EditorSceneView : Game
     {
+        public string scenePath = "";
         public TransformHandle transformHandle { get { return TransformHandle.GetInstance(); } }
         private ColliderEditor colliderEditor;
         public SpriteFont spriteFont;
@@ -22,16 +27,20 @@ namespace Engine
             return instance;
         }
 
-        public Point windowSize;
         public GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
         SpriteBatch uiBatch;
-
         public event EventHandler<GameObject> GameObjectCreated;
         public event EventHandler<GameObject> GameObjectDestroyed;
         public event EventHandler SceneLoaded;
 
         public event EventHandler<SceneData> SceneUpdated;
+
+        Stopwatch updateStopwatch = new Stopwatch();
+        Stopwatch renderStopwatch = new Stopwatch();
+
+        public float updateTime = 0;
+        public float renderTime = 0;
 
         public void FindNewDefaultObjects()
         {
@@ -42,6 +51,15 @@ namespace Engine
                     camera = gameObjects[i].GetComponent<Camera>();
                 }
             }
+        }
+        public GameObject FindGameObject(Type type)
+        {
+            foreach (var gameObject in gameObjects)
+            {
+                var bl = gameObject.GetComponent(type);
+                if (bl != null) { return gameObject; }
+            }
+            return null;
         }
         public int GetGameObjectIndex(int ID)
         {
@@ -58,8 +76,9 @@ namespace Engine
         {
             if (gameObject is SilentGameObject)
             {
-                gameObject.silentInScene = true;
-                editorGameObjects.Add(gameObject);
+                gameObjects.Add(gameObject);
+
+                //editorGameObjects.Add(gameObject);
             }
             else
             {
@@ -67,42 +86,49 @@ namespace Engine
             }
             GameObjectCreated?.Invoke(this, gameObject);
         }
-        public void SaveScene()
+        public bool LoadScene()
         {
-            Serializer.GetInstance().Serialize(gameObjects);
-        }
-        public void LoadScene()
-        {
-            //Add method to clean scene
-            for (int i = 0; i < gameObjects.Count; i++)
+            using (System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog())
             {
-                gameObjects[i].Destroy();
-            }
-            gameObjects.Clear();
+                openFileDialog.InitialDirectory = System.IO.Directory.GetCurrentDirectory();
 
-            //Physics.rigidbodies.Clear();
-
-            gameObjects = new List<GameObject>();
-            GameObject[] des = Serializer.GetInstance().Deserialize().ToArray();
-            for (int i = 0; i < des.Length; i++)
-            {
-
-                for (int j = 0; j < des[i].Components.Count; j++)
+                System.Windows.Forms.DialogResult dialogResult = openFileDialog.ShowDialog();
+                if (dialogResult == System.Windows.Forms.DialogResult.OK)
                 {
-                    des[i].InitializeMemberComponents(des[i].Components[j]);
+                    //Add method to clean scene
+                    for (int i = 0; i < gameObjects.Count; i++)
+                    {
+                        gameObjects[i].Destroy();
+                    }
+                    gameObjects.Clear();
 
-                    des[i].LinkComponents(des[i], des[i].Components[j]);
+                    //Physics.rigidbodies.Clear();
 
-                    des[i].Components[j].gameObject = des[i];
-                    des[i].Components[j].transform.gameObject = des[i];
-                    des[i].Components[j].Awake();
-                    des[i].Components[j].Awoken = true;
+                    gameObjects = new List<GameObject>();
 
+                    GameObject[] des = Serializer.GetInstance().LoadScene(openFileDialog.FileName).ToArray();
+                    for (int i = 0; i < des.Length; i++)
+                    {
+
+                        for (int j = 0; j < des[i].Components.Count; j++)
+                        {
+                            des[i].InitializeMemberComponents(des[i].Components[j]);
+
+                            des[i].LinkComponents(des[i], des[i].Components[j]);
+
+                            des[i].Components[j].gameObject = des[i];
+                            des[i].Components[j].transform.gameObject = des[i];
+                            des[i].Components[j].Awake();
+                            des[i].Components[j].Awoken = true;
+
+                        }
+                        des[i].Awake();
+                        SceneLoaded?.Invoke(this, null);
+                    }
+                    return true;
                 }
-                des[i].Awake();
             }
-
-            SceneLoaded?.Invoke(this, null);
+            return false;
         }
         public void OnGameObjectDestroyed(GameObject gameObject)
         {
@@ -120,8 +146,8 @@ namespace Engine
 
             graphics = new GraphicsDeviceManager(this)
             {
-                PreferredBackBufferWidth = 350,
-                PreferredBackBufferHeight = 350,
+                PreferredBackBufferWidth = 800,
+                PreferredBackBufferHeight = 600,
                 PreferMultiSampling = true,
                 SynchronizeWithVerticalRetrace = true
                 //GraphicsProfile = GraphicsProfile.HiDef
@@ -242,6 +268,18 @@ namespace Engine
             {
                 gameObjects[i].Awake();
             }
+            //CreateLightSceneObjects();
+            void CreateLightSceneObjects()
+            {
+                GameObject light = new GameObject();
+
+                light.Name = "Light";
+                light.transform.Position = new Vector2(camera.Size.X / 2, camera.Size.Y / 2);
+                light.AddComponent<Light>();
+
+
+                light.Awake();
+            }
         }
         public void SelectGameObject(GameObject gameObject)
         {
@@ -257,15 +295,13 @@ namespace Engine
             transformHandle.transform = gameObject.transform;
             transformHandle.objectSelected = true;
         }
+        public SpriteBatch CreateSpriteBatch()
+        {
+            return new SpriteBatch(GraphicsDevice);
+        }
         protected override void Initialize()
         {
             CreateDefaultObjects();
-
-            windowSize = new Point(Window.ClientBounds.Width, Window.ClientBounds.Height);
-            this.Window.ClientSizeChanged += delegate
-            {
-                windowSize = new Point(Window.ClientBounds.Width, Window.ClientBounds.Height);
-            };
 
             TargetElapsedTime = TimeSpan.FromMilliseconds(15);
 
@@ -273,6 +309,10 @@ namespace Engine
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
             uiBatch = new SpriteBatch(GraphicsDevice);
+
+            /*GameObject a = new GameObject();
+            a.AddComponent<ParticleSystem>();
+            a.Awake();*/
 
             base.Initialize();
 
@@ -405,8 +445,12 @@ namespace Engine
         }
         protected override void Update(GameTime gameTime)
         {
+
+            updateStopwatch.Start();
+
             if (Global.GameRunning == false) { return; }
             Time.deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
+            Time.elapsedTime += Time.deltaTime;
 
             if (IsActive)
             {
@@ -420,36 +464,52 @@ namespace Engine
 
             for (int i = 0; i < gameObjects.Count; i++)
             {
-                if (gameObjects[i].Active || gameObjects[i].updateWhenDisabled)
-                {
-                    gameObjects[i].Update();
-                }
+                gameObjects[i].Update();
             }
             for (int i = 0; i < editorGameObjects.Count; i++)
             {
-                if (editorGameObjects[i].Active || editorGameObjects[i].updateWhenDisabled)
-                {
-                    editorGameObjects[i].Update();
-                }
+                editorGameObjects[i].Update();
             }
             colliderEditor.Update();
             SceneUpdated?.Invoke(this, new SceneData() { gameObjects = this.gameObjects, tool = Tools.CurrentTool });
             base.Update(gameTime);
+
+            updateStopwatch.Stop();
+            updateTime = updateStopwatch.ElapsedMilliseconds;
+            updateStopwatch.Reset();
+
         }
         protected override void Draw(GameTime gameTime)
         {
+            renderStopwatch.Start();
             GraphicsDevice.Clear(camera.BackgroundColor);
             /*spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.Opaque,
                         null, null, null, null, camera.staticMatrix);*/
+            /*List<GameObject> gameObjectsWithShader = gameObjects.Where((go) => go.GetComponent<Renderer>()?.effect != null).ToList();
+            for (int i = 0; i < gameObjectsWithShader.Count; i++)
+            {
+                if (gameObjectsWithShader[i].Active)
+                {
+
+                    spriteBatch.Begin(transformMatrix: camera.TranslationMatrix, effect: gameObjectsWithShader[i].GetComponent<Renderer>().effect);
+                    gameObjectsWithShader[i].GetComponent<Renderer>().effect.CurrentTechnique.Passes[0].Apply();
+
+                    gameObjectsWithShader[i].Draw(spriteBatch);
+
+                    spriteBatch.End();
+                }
+            }*/
+
+
             spriteBatch.Begin(transformMatrix: camera.TranslationMatrix);
             for (int i = 0; i < gameObjects.Count; i++)
             {
-                if (gameObjects[i].Active)
-                {
-                    gameObjects[i].Draw(spriteBatch);
-                }
+                gameObjects[i].Draw(spriteBatch);
             }
-            transformHandle.gameObject.Draw(spriteBatch);
+            if (transformHandle.gameObject != null)
+            {
+                transformHandle.gameObject.Draw(spriteBatch);
+            }
             spriteBatch.End();
             if (Global.EditorAttached)
             {
@@ -464,6 +524,11 @@ namespace Engine
             }
 
             base.Draw(gameTime);
+
+
+            renderStopwatch.Stop();
+            renderTime = renderStopwatch.ElapsedMilliseconds;
+            renderStopwatch.Reset();
         }
     }
 }

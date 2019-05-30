@@ -12,12 +12,12 @@ namespace Scripts
 
         // later remove this, use Vector3 position, dont just use Z in renderer or here, i may need stacked objects un future
 
-        private Vector2 position = Vector2.Zero;
-        private Vector2 localPosition = Vector2.Zero;
+        //private Vector2 localPosition = Vector2.Zero;
         private float rotation;
 
-        [ShowInEditor] public Vector2 Position { get { return position + GetPositionFromRotatedParent(); } set { position = value; } }
-        [ShowInEditor]
+        //[ShowInEditor] public Vector2 Position { get { return position; /*+ GetPositionFromRotatedParent();*/ } set { position = value; } }
+        [ShowInEditor] public Vector2 Position { get; set; } = Vector2.Zero;
+        /*[ShowInEditor]
         public Vector2 LocalPosition
         {
             get { return transform.position - GetParentPosition(); }
@@ -26,7 +26,7 @@ namespace Scripts
                 position = value + GetParentPosition();
                 localPosition = value;
             }
-        }
+        }*/
 
         [ShowInEditor]
         public float Rotation
@@ -38,7 +38,7 @@ namespace Scripts
         {
             if (gameObject?.Parent != null)
             {
-                return gameObject.Parent.transform.position;
+                return gameObject.Parent.transform.Position;
             }
             else
             {
@@ -54,7 +54,7 @@ namespace Scripts
             while (prnt != null)
             {
                 float angle = GetRotationFromParentAsPivot() + initialAngleDifferenceFromParent;
-                Vector2 pivot = prnt.transform.position - transform.position;
+                Vector2 pivot = prnt.transform.Position - transform.Position;
 
                 float sin = (float)Math.Sin(angle);
                 float cos = (float)Math.Cos(angle);

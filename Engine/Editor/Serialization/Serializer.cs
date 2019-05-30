@@ -44,10 +44,9 @@ namespace Editor
 
             SerializableTypes.AddRange(typs);
         }
-        public void Serialize(List<GameObject> goList)
+        public void SaveScene(List<GameObject> goList, string scenePath)
         {
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "list.xml");
-            using (StreamWriter sw = new StreamWriter(path))
+            using (StreamWriter sw = new StreamWriter(scenePath))
             {
                 for (int i = 0; i < goList.Count; i++)
                 {
@@ -74,10 +73,9 @@ namespace Editor
                 }
             }
         }
-        public List<GameObject> Deserialize()
+        public List<GameObject> LoadScene(string scenePath)
         {
-            string path = Path.Combine(Directory.GetCurrentDirectory(), "list.xml");
-            using (StreamReader sw = new StreamReader(path))
+            using (StreamReader sw = new StreamReader(scenePath))
             {
                 UpdateSerializableTypes();
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<GameObject>),

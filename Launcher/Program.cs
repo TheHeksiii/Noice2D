@@ -15,7 +15,7 @@ namespace Launcher
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Editor.EditorForm());
+            Application.Run(new Editor.Editor());
 
             //Application.Run(new Editor.ImageEditor.Form1());
         }

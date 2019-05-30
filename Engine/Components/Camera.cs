@@ -34,6 +34,8 @@ namespace Engine
         [ShowInEditor] public float Zoom { get; set; }
         [ShowInEditor] public float Rotation { get; set; }
 
+        [ShowInEditor] public Vector2 Size { get; set; } = new Vector2(800, 600);
+
 
         public Matrix StaticMatrix;
         public Matrix TranslationMatrix
@@ -75,14 +77,21 @@ namespace Engine
 
         public override void Update()
         {
-            if (AntialiasingStrength != EditorSceneView.GetInstance().GraphicsDevice.PresentationParameters.MultiSampleCount)
+            if (EditorSceneView.GetInstance().graphics.PreferMultiSampling != (AntialiasingStrength == 0 ? false : true))
             {
                 EditorSceneView.GetInstance().graphics.PreferMultiSampling = AntialiasingStrength == 0 ? false : true;
                 EditorSceneView.GetInstance().GraphicsDevice.PresentationParameters.MultiSampleCount = AntialiasingStrength;
                 EditorSceneView.GetInstance().graphics.ApplyChanges();
             }
+            if (EditorSceneView.GetInstance().graphics.PreferredBackBufferWidth != Size.X || EditorSceneView.GetInstance().graphics.PreferredBackBufferHeight != Size.Y)
+            {
+                EditorSceneView.GetInstance().graphics.PreferredBackBufferWidth = (int)Size.X;
+                EditorSceneView.GetInstance().graphics.PreferredBackBufferHeight= (int)Size.Y;
+                EditorSceneView.GetInstance().graphics.ApplyChanges();
+            }
 
-            Vector2 cameraMovement = Vector2.Zero;
+
+            /*Vector2 cameraMovement = Vector2.Zero;
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
                 cameraMovement.X = -1;
@@ -113,8 +122,8 @@ namespace Engine
                 cameraMovement.Normalize();
             }
             cameraMovement *= 10f;
-
-            Move(cameraMovement);
+            
+            Move(cameraMovement);*/
         }
     }
 }

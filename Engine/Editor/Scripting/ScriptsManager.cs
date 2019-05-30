@@ -48,6 +48,7 @@ namespace Editor
             parameters.ReferencedAssemblies.Add("MonoGame.Framework.dll");
             parameters.ReferencedAssemblies.Add("System.Drawing.dll");
             parameters.ReferencedAssemblies.Add("System.dll");
+            parameters.ReferencedAssemblies.Add("System.Xml.dll");
 
             parameters.GenerateInMemory = true;
             parameters.GenerateExecutable = false;
@@ -70,7 +71,7 @@ namespace Editor
 
             ScriptsAssembly = assembly;
         }
-        public static void CreateScript(string className)
+        public static Type CreateScript(string className)
         {
             Type myType = CompileResultType(className);
             object myObject = Activator.CreateInstance(myType);
@@ -88,6 +89,7 @@ namespace Editor
             targetClass.BaseTypes.Add(new CodeTypeReference((typeof(Component))));
             var codeCompileUnit = new CodeCompileUnit();
             var globalNamespace = new CodeNamespace();
+
             globalNamespace.Imports.Add(new CodeNamespaceImport("Engine"));
             globalNamespace.Imports.Add(new CodeNamespaceImport("Scripts"));
             globalNamespace.Imports.Add(new CodeNamespaceImport("Microsoft.Xna.Framework"));
@@ -124,11 +126,13 @@ namespace Editor
                 sourceWriter.Write(pureCode);
 
             }
-            var p = new Microsoft.Build.Evaluation.Project(@"./Project.csproj");
+            var p = new Microsoft.Build.Evaluation.Project(@"./Project.csproj", null, null, new Microsoft.Build.Evaluation.ProjectCollection());
             p.AddItem("Compile", outputPath);
             p.Save();
 
             CompileScriptsAssembly();
+
+            return myType;
         }
 
         private static Type CompileResultType(string className)

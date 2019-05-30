@@ -125,8 +125,6 @@ namespace Editor
                 colorPickerForm.ShowDialog();
 
             }
-
-
             return value;
         }
     }
@@ -151,15 +149,52 @@ namespace Editor
                 DialogResult dialogResult = openFileDialog.ShowDialog();
                 if (dialogResult == DialogResult.OK)
                 {
-                    string assetsPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "Assets");
+                    string assetsPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "AssetsInUse");
                     Directory.CreateDirectory(assetsPath);
 
-                    File.Copy(openFileDialog.FileName, Path.Combine(assetsPath, openFileDialog.SafeFileName), overwrite: true);
-                    var scene = EditorSceneView.GetInstance();
-                    System.IO.Stream stream = TitleContainer.OpenStream(Path.Combine("Assets", openFileDialog.SafeFileName));
-                    value = Texture2D.FromStream(scene.GraphicsDevice, stream);
-                }
+                    string newFilePath = Path.Combine(assetsPath, openFileDialog.SafeFileName);
 
+                    File.Copy(openFileDialog.FileName, newFilePath, overwrite: true);
+
+
+                    //(context.Instance as Scripts.ImageRenderer).texturePath = Path.Combine("AssetsInUse", openFileDialog.SafeFileName);
+
+                    var scene = EditorSceneView.GetInstance();
+
+                    System.IO.Stream stream = TitleContainer.OpenStream(Path.Combine("AssetsInUse", openFileDialog.SafeFileName));
+                    value = Texture2D.FromStream(scene.GraphicsDevice, stream);
+                    stream.Close();
+                }
+            }
+            return value;
+        }
+    }
+    public class EffectEditor : UITypeEditor
+    {
+        public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
+        {
+            return UITypeEditorEditStyle.Modal;
+        }
+        public override bool GetPaintValueSupported(ITypeDescriptorContext context)
+        {
+            return true;
+        }
+        public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
+        {
+            if (context == null || context.Instance == null || provider == null)
+            {
+                return base.EditValue(context, provider, value);
+            }
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                DialogResult dialogResult = openFileDialog.ShowDialog();
+                if (dialogResult == DialogResult.OK)
+                {
+
+
+                    //(context.Instance as Scripts.Renderer).effect = EditorSceneView.GetInstance().Content.Load<Effect>(openFileDialog.FileName);
+                    value = EditorSceneView.GetInstance().Content.Load<Effect>(openFileDialog.FileName.Replace(".xnb", ""));
+                }
             }
             return value;
         }

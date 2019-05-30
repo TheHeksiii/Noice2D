@@ -30,6 +30,7 @@ namespace Scripts
         public float friction = 1;
         public float mass = 1;
 
+
         public override void Awake()
         {
             //gameObject.OnComponentAdded += CheckForColliderAdded;
@@ -105,7 +106,9 @@ namespace Scripts
             {
                 touchingRigidbodies[i].OnCollisionExit(this);
                 OnCollisionExit(touchingRigidbodies[i]);
-
+            }
+            if (Physics.rigidbodies.Contains(this))
+            {
                 Physics.rigidbodies.Remove(this);
             }
         }

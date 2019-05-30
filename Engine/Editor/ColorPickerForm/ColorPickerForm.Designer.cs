@@ -73,8 +73,8 @@
             this.pictureBox36 = new System.Windows.Forms.PictureBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
-            this.colorMap1 = new Editor.ColorMap();
-            this.colorMapHue1 = new Editor.ColorMapHue();
+            this.colorMap1 = new global::Editor.ColorMap();
+            this.colorMapHue1 = new global::Editor.ColorMapHue();
             ((System.ComponentModel.ISupportInitialize)(this.colorPreview)).BeginInit();
             this.flowLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox37)).BeginInit();

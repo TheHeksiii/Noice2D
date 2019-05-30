@@ -50,15 +50,11 @@ namespace Scripts
             return worldPoint - transform.Position;
         }
 
-
-        public virtual void OnDestroyed()
-        {
-        }
-
         // Callbacks
 
         public virtual void Awake() { Awoken = true; }
         public virtual void Update() { }
+        public virtual void OnDestroyed() { }
 
         public virtual void OnCollisionEnter(Rigidbody rigidbody) { }
         public virtual void OnCollisionExit(Rigidbody rigidbody) { }
