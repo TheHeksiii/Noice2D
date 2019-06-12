@@ -1,7 +1,7 @@
 # Noice2D
 Simple 2D C# game engine with component based architecture.
  To build this project you need http://www.monogame.net/downloads/
-Engine features **editor** that consists of
+ Engine features **editor** that consists of
 * Inspector, 
 * Hierarchy
 * Color picker
