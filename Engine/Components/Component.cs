@@ -1,17 +1,15 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Newtonsoft.Json;
-using System;
+﻿using Engine;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using Engine;
 
 namespace Scripts
 {
     public class Component : IDestroyable
     {
+        private GameObject gameObject;
         [System.Xml.Serialization.XmlIgnore]
-        public GameObject gameObject { get; set; }
+        public GameObject GameObject { get { return gameObject; } set { gameObject = value; gameObjectID = value.ID; } }
+        public int gameObjectID;
 
         [System.Xml.Serialization.XmlIgnore]
         [System.ComponentModel.DefaultValue(false)]
@@ -26,28 +24,36 @@ namespace Scripts
         [System.Xml.Serialization.XmlIgnore]
         public Transform transform
         {
-            get { return gameObject.transform; }
-            set { gameObject.transform = value; }
+            get { return GameObject.transform; }
+            set { GameObject.transform = value; }
         }
         public virtual bool Enabled { get; set; } = true;
 
         public T GetComponent<T>(int? index = null) where T : Component
         {
-            return gameObject.GetComponent<T>(index);
+            return GameObject.GetComponent<T>(index);
         }
         public List<T> GetComponents<T>() where T : Component
         {
-            return gameObject.GetComponents<T>();
+            return GameObject.GetComponents<T>();
         }
 
 
-        public Vector2 TransformToWorld(Vector2 localPoint)
+        public Vector3 TransformToWorld(Vector3 localPoint)
         {
             return localPoint + transform.Position;
         }
-        public Vector2 TransformToLocal(Vector2 worldPoint)
+        public Vector2 TransformToWorld(Vector2 localPoint)
+        {
+            return localPoint + transform.Position.ToVector2();
+        }
+        public Vector3 TransformToLocal(Vector3 worldPoint)
         {
             return worldPoint - transform.Position;
+        }
+        public Vector2 TransformToLocal(Vector2 worldPoint)
+        {
+            return worldPoint - transform.Position.ToVector2();
         }
 
         // Callbacks

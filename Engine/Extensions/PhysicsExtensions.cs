@@ -1,10 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using System;
-using Color = System.Drawing.Color;
-using Scripts;
 using MonoGame.Extended;
+using Scripts;
+using System;
 using System.Collections.Generic;
 
 namespace Engine
@@ -64,7 +61,7 @@ namespace Engine
                     }
                     break;
                 case CircleCollider circleCollider:
-                    if ((distance = Vector2.Distance(circleCollider.transform.Position, point)) < circleCollider.Radius)
+                    if ((distance = Vector2.Distance(circleCollider.transform.Position.ToVector2(), point)) < circleCollider.Radius)
                     {
                         isIn = true;
                     }
@@ -74,7 +71,7 @@ namespace Engine
 
                     Vector2 boxCenter = boxCollider.rect.Center;
                     RectangleF rect = boxCollider.rect;
-                    rect.Position = boxCollider.transform.Position;
+                    rect.Position = boxCollider.transform.Position.ToVector2();
 
                     isIn = (point.X < rect.Right &&
                             point.X > rect.Left &&
@@ -86,10 +83,10 @@ namespace Engine
             }
             return (isIn, distance);
         }
-        public static (bool intersects, float distance) Intersects(this Rigidbody rb1, Rigidbody rb2, Vector2? rb1Pos = null, Vector2? rb2Pos = null)
+        public static (bool intersects, float distance) Intersects(this Rigidbody rb1, Rigidbody rb2, Vector3? rb1Pos = null, Vector3? rb2Pos = null)
         {
-            Vector2 rb1Position;
-            Vector2 rb2Position;
+            Vector3 rb1Position;
+            Vector3 rb2Position;
 
             if (rb1Pos == null || rb2Pos == null)
             {
@@ -98,13 +95,13 @@ namespace Engine
             }
             else
             {
-                rb1Position = (Vector2)rb1Pos;
-                rb2Position = (Vector2)rb2Pos;
+                rb1Position = (Vector3)rb1Pos;
+                rb2Position = (Vector3)rb2Pos;
             }
 
             if (rb1.collider is CircleCollider && rb2.collider is CircleCollider)
             {
-                float dist = Vector2.Distance(rb1Position, rb2Position);
+                float dist = Vector3.Distance(rb1Position, rb2Position);
                 return (dist < rb1.GetComponent<CircleCollider>().Radius + rb2.GetComponent<CircleCollider>().Radius, dist);
             }
             else if (rb1.collider is BoxCollider && rb2.collider is BoxCollider)
@@ -113,12 +110,12 @@ namespace Engine
             }
             else if (rb1.collider is CircleCollider && rb2.collider is LineCollider)
             {
-                var dist = Vector2.Distance(ClosestPointOnLine(rb2.GetComponent<LineCollider>().GetLineStart(), rb2.GetComponent<LineCollider>().GetLineEnd(), rb1Position), rb1Position);
+                var dist = Vector2.Distance(ClosestPointOnLine(rb2.GetComponent<LineCollider>().GetLineStart(), rb2.GetComponent<LineCollider>().GetLineEnd(), rb1Position.ToVector2()), rb1Position.ToVector2());
                 return (dist <= rb1.GetComponent<CircleCollider>().Radius, dist);
             }
             else if (rb2.collider is CircleCollider && rb1.collider is LineCollider)
             {
-                var dist = Vector2.Distance(ClosestPointOnLine(rb1.GetComponent<LineCollider>().GetLineStart(), rb1.GetComponent<LineCollider>().GetLineEnd(), rb2Position), rb2Position);
+                var dist = Vector2.Distance(ClosestPointOnLine(rb1.GetComponent<LineCollider>().GetLineStart(), rb1.GetComponent<LineCollider>().GetLineEnd(), rb2Position.ToVector2()), rb2Position.ToVector2());
                 return (dist <= rb2.GetComponent<CircleCollider>().Radius, dist);
             }
 
@@ -129,10 +126,10 @@ namespace Engine
                 LineCollider lineCollider = (LineCollider)(rb2.collider is LineCollider ? rb2.collider : rb1.collider);
 
                 List<Vector2[]> lines = new List<Vector2[]>() {
-                    new Vector2[2] { boxCollider.transform.Position, boxCollider.transform.Position + new Vector2(boxCollider.rect.Width, 0) }, // UP
-                    new Vector2[2] { boxCollider.transform.Position, boxCollider.transform.Position + new Vector2(0, boxCollider.rect.Height) }, // LEFT
-                    new Vector2[2] { boxCollider.transform.Position + new Vector2(0, boxCollider.rect.Height), boxCollider.transform.Position + new Vector2(boxCollider.rect.Width, boxCollider.rect.Height) }, // BOTTOM
-                    new Vector2[2] { boxCollider.transform.Position + new Vector2(boxCollider.rect.Width, 0), boxCollider.transform.Position + new Vector2(boxCollider.rect.Width, boxCollider.rect.Height) }  // RIGHT
+                    new Vector2[2] { boxCollider.transform.Position.ToVector2(), boxCollider.transform.Position.ToVector2() + new Vector2(boxCollider.rect.Width, 0) }, // UP
+                    new Vector2[2] { boxCollider.transform.Position.ToVector2(), boxCollider.transform.Position.ToVector2() + new Vector2(0, boxCollider.rect.Height) }, // LEFT
+                    new Vector2[2] { boxCollider.transform.Position.ToVector2() + new Vector2(0, boxCollider.rect.Height), boxCollider.transform.Position.ToVector2() + new Vector2(boxCollider.rect.Width, boxCollider.rect.Height) }, // BOTTOM
+                    new Vector2[2] { boxCollider.transform.Position.ToVector2() + new Vector2(boxCollider.rect.Width, 0), boxCollider.transform.Position.ToVector2() + new Vector2(boxCollider.rect.Width, boxCollider.rect.Height) }  // RIGHT
                 };
                 for (int i = 0; i < lines.Count; i++)
                 {

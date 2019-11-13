@@ -1,12 +1,6 @@
 ﻿using Engine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Scripts
 {
@@ -19,7 +13,7 @@ namespace Scripts
         {
             if (texture == null && texturePath != null)
             {
-                var scene = EditorSceneView.GetInstance();
+                var scene = Scene.GetInstance();
                 System.IO.Stream stream = TitleContainer.OpenStream(texturePath);
                 texture = Texture2D.FromStream(scene.GraphicsDevice, stream);
                 stream.Close();
@@ -28,8 +22,8 @@ namespace Scripts
         }
         public override void Draw(SpriteBatch batch)
         {
-            if (gameObject == null || texture == null) { return; }
-            batch.Draw(texture: texture, position: transform.Position, color: this.Color, rotation: -transform.Rotation, scale: transform.Scale
+            if (GameObject == null || texture == null) { return; }
+            batch.Draw(texture: texture, position: transform.Position.ToVector2(), color: this.Color, rotation: -transform.Rotation.Z, scale: transform.Scale.ToVector2()
                 , origin: new Microsoft.Xna.Framework.Vector2(texture.Width / 2, texture.Height / 2));
             base.Draw(batch);
         }

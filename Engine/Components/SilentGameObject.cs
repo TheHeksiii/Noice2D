@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 
 namespace Engine
 {
@@ -13,7 +8,7 @@ namespace Engine
         {
         }
 
-        public SilentGameObject(Vector2? position = null, Vector2? scale = null, string name = "", bool linkComponents = true) : base(position, scale, name, linkComponents)
+        public SilentGameObject(Vector3? position = null, Vector3? scale = null, string name = "", bool linkComponents = true) : base(position, scale, name, linkComponents)
         {
         }
     }

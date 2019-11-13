@@ -1,10 +1,6 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Newtonsoft.Json;
-using System;
+﻿using Engine;
+using Microsoft.Xna.Framework;
 using System.Collections.Generic;
-using Engine;
 namespace Scripts
 {
     public sealed class Rigidbody : Component
@@ -19,7 +15,7 @@ namespace Scripts
         [ShowInEditor] public bool IsStatic { get; set; } = false;
         [ShowInEditor] public bool IsTrigger { get; set; } = false;
         [ShowInEditor] public bool IsButton { get; set; } = false;
-        [ShowInEditor] public Vector2 Velocity { get; set; } = new Vector2(0, 0);
+        [ShowInEditor] public Vector3 Velocity { get; set; } = new Vector3(0, 0, 0);
 
         public float velocityDrag = 0.99f;
         [ShowInEditor] public float Bounciness { get; set; } = 0f;
@@ -44,7 +40,7 @@ namespace Scripts
         /// </summary>
         public void FixedUpdate()
         {
-            if (EditorSceneView.GetInstance()?.GraphicsDevice == null || IsStatic || IsButton)
+            if (Scene.GetInstance()?.GraphicsDevice == null || IsStatic || IsButton)
             {
                 return;
             }
@@ -60,14 +56,14 @@ namespace Scripts
 
         }
 
-        public Vector2 GetPositionOnNextFrame()
+        public Vector3 GetPositionOnNextFrame()
         {
             if (IsStatic)
             {
                 return transform.Position;
             }
-            Vector2 pos = transform.Position;
-            Vector2 vel = new Vector2(Velocity.X, Velocity.Y);
+            Vector3 pos = transform.Position;
+            Vector3 vel = new Vector3(Velocity.X, Velocity.Y, Velocity.Z);
 
             if (UseGravity)
             {
@@ -81,7 +77,7 @@ namespace Scripts
         {
             Velocity -= Physics.gravity * Time.deltaTime;
         }
-        public void ApplyVelocity(Vector2 vel)
+        public void ApplyVelocity(Vector3 vel)
         {
             if (IsStatic == false)
             {
@@ -94,10 +90,10 @@ namespace Scripts
         }
         public void TranslateAngularRotationToTransform()
         {
-            transform.Rotation += AngularVelocity * Time.deltaTime;
+            transform.Rotation += new Vector3(0, 0, AngularVelocity * Time.deltaTime);
             if (touchingRigidbodies.Count > 0) // only move from rotating, when friciton from other object
             {
-                transform.Position += new Vector2(AngularVelocity, 0);
+                transform.Position += new Vector3(AngularVelocity, 0, 0);
             }
         }
         public override void OnDestroyed()
@@ -118,11 +114,11 @@ namespace Scripts
             touchingRigidbodies.Add(rigidbody);
 
             // Call callback on components that implement interface IPhysicsCallbackListener
-            for (int i = 0; i < gameObject.Components.Count; i++)
+            for (int i = 0; i < GameObject.Components.Count; i++)
             {
-                if ((gameObject.Components[i] is Rigidbody) == false)
+                if ((GameObject.Components[i] is Rigidbody) == false)
                 {
-                    gameObject.Components[i].OnCollisionEnter(rigidbody);
+                    GameObject.Components[i].OnCollisionEnter(rigidbody);
                 }
             }
         }
@@ -133,11 +129,11 @@ namespace Scripts
                 touchingRigidbodies.Remove(rigidbody);
             }
 
-            for (int i = 0; i < gameObject.Components.Count; i++)
+            for (int i = 0; i < GameObject.Components.Count; i++)
             {
-                if ((gameObject.Components[i] is Rigidbody) == false)
+                if ((GameObject.Components[i] is Rigidbody) == false)
                 {
-                    gameObject.Components[i].OnCollisionExit(rigidbody);
+                    GameObject.Components[i].OnCollisionExit(rigidbody);
                 }
             }
         }
@@ -146,11 +142,11 @@ namespace Scripts
             touchingRigidbodies.Add(rigidbody);
 
             // Call callback on components that implement interface IPhysicsCallbackListener
-            for (int i = 0; i < gameObject.Components.Count; i++)
+            for (int i = 0; i < GameObject.Components.Count; i++)
             {
-                if ((gameObject.Components[i] is Rigidbody) == false)
+                if ((GameObject.Components[i] is Rigidbody) == false)
                 {
-                    gameObject.Components[i].OnTriggerEnter(rigidbody);
+                    GameObject.Components[i].OnTriggerEnter(rigidbody);
                 }
             }
         }
@@ -161,11 +157,11 @@ namespace Scripts
                 touchingRigidbodies.Remove(rigidbody);
             }
 
-            for (int i = 0; i < gameObject.Components.Count; i++)
+            for (int i = 0; i < GameObject.Components.Count; i++)
             {
-                if ((gameObject.Components[i] is Rigidbody) == false)
+                if ((GameObject.Components[i] is Rigidbody) == false)
                 {
-                    gameObject.Components[i].OnTriggerExit(rigidbody);
+                    GameObject.Components[i].OnTriggerExit(rigidbody);
                 }
             }
         }

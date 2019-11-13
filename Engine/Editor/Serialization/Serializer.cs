@@ -1,17 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Newtonsoft.Json;
-using System.IO;
-using static System.Net.Mime.MediaTypeNames;
-using Engine;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.Xml.Serialization;
-using System.Linq;
+﻿using Engine;
 using Scripts;
-using System.Reflection;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Xml.Serialization;
 
 namespace Editor
 {
@@ -44,43 +37,77 @@ namespace Editor
 
             SerializableTypes.AddRange(typs);
         }
-        public void SaveScene(List<GameObject> goList, string scenePath)
+        public void SaveGameObjects(SceneFile sceneFile, string scenePath)
         {
             using (StreamWriter sw = new StreamWriter(scenePath))
             {
-                for (int i = 0; i < goList.Count; i++)
+                for (int i = 0; i < sceneFile.GameObjects.Count; i++)
                 {
-                    goList[i].Awoken = false;
-                    for (int j = 0; j < goList[i].Components.Count; j++)
+                    sceneFile.GameObjects[i].Awoken = false;
+                    for (int j = 0; j < sceneFile.GameObjects[i].Components.Count; j++)
                     {
-                        goList[i].Components[j].Awoken = false;
+                        sceneFile.GameObjects[i].Components[j].Awoken = false;
                     }
                 }
                 UpdateSerializableTypes();
-                XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<GameObject>),
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(SceneFile),
                     SerializableTypes.ToArray());
                 //SerializableTypes.ToArray());
 
-                xmlSerializer.Serialize(sw, goList);
+                xmlSerializer.Serialize(sw, sceneFile);
 
-                for (int i = 0; i < goList.Count; i++)
+                for (int i = 0; i < sceneFile.GameObjects.Count; i++)
                 {
-                    goList[i].Awoken = true;
-                    for (int j = 0; j < goList[i].Components.Count; j++)
+                    sceneFile.GameObjects[i].Awoken = true;
+                    for (int j = 0; j < sceneFile.GameObjects[i].Components.Count; j++)
                     {
-                        goList[i].Components[j].Awoken = true;
+                        sceneFile.GameObjects[i].Components[j].Awoken = true;
                     }
                 }
             }
         }
-        public List<GameObject> LoadScene(string scenePath)
+        public SceneFile LoadGameObjects(string scenePath)
         {
-            using (StreamReader sw = new StreamReader(scenePath))
+            using (StreamReader sr = new StreamReader(scenePath))
             {
                 UpdateSerializableTypes();
-                XmlSerializer xmlSerializer = new XmlSerializer(typeof(List<GameObject>),
+                XmlSerializer xmlSerializer = new XmlSerializer(typeof(SceneFile),
     SerializableTypes.ToArray());
-                return ((List<GameObject>)xmlSerializer.Deserialize(sw));
+                return ((SceneFile)xmlSerializer.Deserialize(sr));
+            }
+        }
+        public void ConnectGameObjectsWithComponents(SceneFile sf)
+        {
+            GameObject[] des = sf.GameObjects.ToArray();
+            Component[] comps = sf.Components.ToArray();
+
+            for (int i = 0; i < des.Length; i++)
+            {
+                for (int j = 0; j < comps.Length; j++)
+                {
+                    if (comps[j].gameObjectID == des[i].ID)
+                    {
+                        des[i].Components.Add(comps[j]);
+
+                        comps[j].GameObject = des[i];
+                    }
+                }
+            }
+            for (int i = 0; i < des.Length; i++)
+            {
+                for (int j = 0; j < des[i].Components.Count; j++)
+                {
+                    des[i].InitializeMemberComponents(des[i].Components[j]);
+
+                    des[i].LinkComponents(des[i], des[i].Components[j]);
+
+                    des[i].Components[j].GameObject = des[i];
+                    des[i].Components[j].transform.GameObject = des[i];
+                    des[i].Components[j].Awake();
+                    des[i].Components[j].Awoken = true;
+
+                }
+                des[i].Awake();
             }
         }
     }

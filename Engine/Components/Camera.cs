@@ -1,13 +1,8 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
-using Engine;
 using Scripts;
-using Microsoft.Xna.Framework.Graphics;
-using Form = System.Windows.Forms.Form;
-using System;
 namespace Engine
 {
-    public class Camera : Component
+    public class Camera : Component, IColorable
     {
         public override bool Enabled { get { return true; } }
 
@@ -21,10 +16,9 @@ namespace Engine
         {
             instance = this;
             Zoom = 1f;
-            StaticMatrix = TranslationMatrix;
         }
         [System.ComponentModel.Editor(typeof(Editor.ColorPickerEditor), typeof(System.Drawing.Design.UITypeEditor))]
-        [ShowInEditor] public Color BackgroundColor { get; set; } = new Color(34, 34, 34);
+        [ShowInEditor] public Color Color { get; set; } = new Color(34, 34, 34);
 
 
         [ShowInEditor]
@@ -32,21 +26,22 @@ namespace Engine
 
 
         [ShowInEditor] public float Zoom { get; set; }
-        [ShowInEditor] public float Rotation { get; set; }
 
         [ShowInEditor] public Vector2 Size { get; set; } = new Vector2(800, 600);
 
 
-        public Matrix StaticMatrix;
         public Matrix TranslationMatrix
         {
             get
             {
-                return Matrix.CreateTranslation(-(int)transform.Position.X,
-                   -(int)transform.Position.Y, 0) *
-                   //Matrix.CreateRotationZ(Rotation) *
-                   Matrix.CreateScale(new Vector3(Zoom, Zoom, 1)) *
-                Matrix.CreateRotationY(Rotation);
+                return
+                Matrix.CreateScale(new Vector3(Zoom, Zoom, 1)) *
+                Matrix.CreateRotationX(transform.Rotation.X) *
+                Matrix.CreateRotationY(transform.Rotation.Z) *
+                Matrix.CreateRotationZ(transform.Rotation.Y) *
+                Matrix.CreateTranslation(-(int)transform.Position.X,
+                   -(int)transform.Position.Y, -(int)transform.Position.Z);
+                //Matrix.CreateRotationZ(Rotation);
             }
         }
 
@@ -59,35 +54,34 @@ namespace Engine
             }
         }
 
-        public void Move(Vector2 moveVector)
+        public void Move(Vector3 moveVector)
         {
             transform.Position += moveVector;
         }
 
-        public Vector2 WorldToScreen(Vector2 worldPosition, bool staticMatrix = false)
+        public Vector3 WorldToScreen(Vector3 worldPosition)
         {
-            return Vector2.Transform(worldPosition, staticMatrix ? StaticMatrix : TranslationMatrix);
+            return Vector3.Transform(worldPosition, TranslationMatrix);
         }
 
-        public Vector2 ScreenToWorld(Vector2 screenPosition, bool staticMatrix = false)
+        public Vector3 ScreenToWorld(Vector3 screenPosition)
         {
-            return Vector2.Transform(screenPosition,
-                Matrix.Invert(staticMatrix ? StaticMatrix : TranslationMatrix));
+            return Vector3.Transform(screenPosition,
+                Matrix.Invert(TranslationMatrix));
         }
-
         public override void Update()
         {
-            if (EditorSceneView.GetInstance().graphics.PreferMultiSampling != (AntialiasingStrength == 0 ? false : true))
+            if (Scene.GetInstance().graphics.PreferMultiSampling != (AntialiasingStrength == 0 ? false : true))
             {
-                EditorSceneView.GetInstance().graphics.PreferMultiSampling = AntialiasingStrength == 0 ? false : true;
-                EditorSceneView.GetInstance().GraphicsDevice.PresentationParameters.MultiSampleCount = AntialiasingStrength;
-                EditorSceneView.GetInstance().graphics.ApplyChanges();
+                Scene.GetInstance().graphics.PreferMultiSampling = AntialiasingStrength == 0 ? false : true;
+                Scene.GetInstance().GraphicsDevice.PresentationParameters.MultiSampleCount = AntialiasingStrength;
+                Scene.GetInstance().graphics.ApplyChanges();
             }
-            if (EditorSceneView.GetInstance().graphics.PreferredBackBufferWidth != Size.X || EditorSceneView.GetInstance().graphics.PreferredBackBufferHeight != Size.Y)
+            if (Scene.GetInstance().graphics.PreferredBackBufferWidth != Size.X || Scene.GetInstance().graphics.PreferredBackBufferHeight != Size.Y)
             {
-                EditorSceneView.GetInstance().graphics.PreferredBackBufferWidth = (int)Size.X;
-                EditorSceneView.GetInstance().graphics.PreferredBackBufferHeight= (int)Size.Y;
-                EditorSceneView.GetInstance().graphics.ApplyChanges();
+                Scene.GetInstance().graphics.PreferredBackBufferWidth = (int)Size.X;
+                Scene.GetInstance().graphics.PreferredBackBufferHeight = (int)Size.Y;
+                Scene.GetInstance().graphics.ApplyChanges();
             }
 
 

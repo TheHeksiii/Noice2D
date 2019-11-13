@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Engine;
+﻿using Engine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
@@ -17,7 +12,7 @@ namespace Scripts
         public bool editingPoints = false;
         public override void Draw(SpriteBatch batch)
         {
-            if (gameObject == null || polygonCollider == null) { return; }
+            if (GameObject == null || polygonCollider == null) { return; }
 
             for (int i = 0; i < polygonCollider.Points.Count; i++)
             {

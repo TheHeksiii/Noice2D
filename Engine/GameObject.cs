@@ -1,15 +1,10 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using Newtonsoft.Json;
+using Scripts;
 using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using Scripts;
-using System.Reflection;
 using System.Linq;
+using System.Reflection;
 using System.Xml.Serialization;
 
 namespace Engine
@@ -24,9 +19,9 @@ namespace Engine
         {
             get
             {
-                int index = EditorSceneView.GetInstance().GetGameObjectIndex(parentID);
+                int index = Scene.GetInstance().GetGameObjectIndex(parentID);
                 if (index != -1)
-                { return EditorSceneView.GetInstance().gameObjects[index]; }
+                { return Scene.GetInstance().gameObjects[index]; }
                 else
                 {
                     return null;
@@ -34,12 +29,12 @@ namespace Engine
             }
             set
             {
-                int index = EditorSceneView.GetInstance().GetGameObjectIndex(parentID);
+                int index = Scene.GetInstance().GetGameObjectIndex(parentID);
 
                 parentID = (int)value.ID;
                 if (index != -1)
                 {
-                    EditorSceneView.GetInstance().gameObjects[EditorSceneView.GetInstance().GetGameObjectIndex(parentID)] = value;
+                    Scene.GetInstance().gameObjects[Scene.GetInstance().GetGameObjectIndex(parentID)] = value;
                 }
             }
         }
@@ -58,38 +53,51 @@ namespace Engine
 
         [System.ComponentModel.DefaultValue(false)]
         public bool Awoken { get; set; } = false;
-        public int? ID { get; set; } = null;
+        public int ID { get; set; } = -1;
         [ShowInEditor] public string Name { get; set; } = "";
         public bool selected = false;
 
         public bool Active { get; set; } = true;
 
         //[System.Xml.Serialization.XmlArrayItem(type: typeof(Component))]
-        [XmlElement("Components")]
+        [System.Xml.Serialization.XmlIgnore]
         public List<Component> Components = new List<Component>();
 
         public List<GameObject> GameObjects = new List<GameObject>();
 
+
         public Transform transform { get; set; }
 
-        void Setup()
+        void Setup(bool linkComponents = true)
         {
-            transform = AddComponent<Transform>();
-            OnDestroyed += RemoveFromLists;
-
             ID = IDsManager.gameObjectNextID;
             IDsManager.gameObjectNextID++;
+
+            if (GetComponent<Transform>() == null)
+            {
+                if (transform == null)
+                {
+                    transform = AddComponent<Transform>();
+                }
+                else
+                {
+                    Components.Add(transform);
+                }
+            }
+            OnDestroyed += RemoveFromLists;
+
+            if (linkComponents) OnComponentAdded += LinkComponents;
 
             TryToAddToGameObjectsList();
         }
         public GameObject()
         {
-            Setup();
+            Setup(true);
         }
-        public GameObject(Vector2? position = null, Vector2? scale = null, string name = "", bool linkComponents = true)
+        public GameObject(Vector3? position = null, Vector3? scale = null, string name = "", bool linkComponents = true)
         {
             this.Name = name;
-            Setup();
+            Setup(linkComponents);
             if (position != null)
             {
                 transform.Position = position.Value;
@@ -99,11 +107,11 @@ namespace Engine
                 transform.Scale = scale.Value;
             }
 
-            if (linkComponents)
+            /*if (linkComponents)
             {
                 OnComponentAdded += LinkComponents;
-            }
-            
+            }*/
+
         }
         public void SetParent(GameObject par)
         {
@@ -189,8 +197,8 @@ namespace Engine
                 PropertyInfo gameObjectFieldInfo = componentFields[0].FieldType.GetProperty("gameObject");
                 PropertyInfo transformFieldInfo = componentFields[0].FieldType.GetProperty("transform");
 
-                gameObjectFieldInfo.SetValue(component, Convert.ChangeType(this, gameObjectFieldInfo.PropertyType), null);
-                transformFieldInfo.SetValue(component, Convert.ChangeType(transform, transformFieldInfo.PropertyType), null);
+                gameObjectFieldInfo?.SetValue(component, this, null);
+                transformFieldInfo?.SetValue(component, transform, null);
             }
         }
 
@@ -198,16 +206,16 @@ namespace Engine
         {
             //if (silentInScene == false)
             //{
-            EditorSceneView.GetInstance().OnGameObjectCreated(this);
+            Scene.GetInstance().OnGameObjectCreated(this);
             //}
         }
         public virtual void Awake()
         {
 
-            if (transform == null)
+            /*if (transform == null && GetComponent<Transform>() == null)
             {
                 transform = AddComponent<Transform>();
-            }
+            }*/
 
             for (int i = 0; i < Components.Count; i++)
             {
@@ -242,7 +250,7 @@ namespace Engine
                 Components.Clear();
             }
 
-            EditorSceneView.GetInstance().OnGameObjectDestroyed(this);
+            Scene.GetInstance().OnGameObjectDestroyed(this);
         }
         public void Destroy(float? delay = null)
         {
@@ -277,7 +285,7 @@ namespace Engine
         public Component AddComponent<Component>() where Component : Scripts.Component, new()
         {
             Component component = new Component();
-            component.gameObject = this;
+            component.GameObject = this;
 
             Components.Add(component);
 
@@ -289,7 +297,7 @@ namespace Engine
         public Component AddComponent(Type type)
         {
             var component = (Scripts.Component)Activator.CreateInstance(type);
-            component.gameObject = this;
+            component.GameObject = this;
 
             Components.Add(component);
 
@@ -405,11 +413,11 @@ namespace Engine
             }
         }
 
-        public Vector2 TransformToWorld(Vector2 localPoint)
+        public Vector3 TransformToWorld(Vector3 localPoint)
         {
             return localPoint + transform.Position;
         }
-        public Vector2 TransformToLocal(Vector2 worldPoint)
+        public Vector3 TransformToLocal(Vector3 worldPoint)
         {
             return worldPoint - transform.Position;
         }
