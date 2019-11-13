@@ -1,10 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Engine;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
-using System;
-using System.Diagnostics;
-using Engine;
 namespace Scripts
 {
     public class BoxRenderer : Renderer
@@ -15,8 +11,8 @@ namespace Scripts
 
         public override void Draw(SpriteBatch batch)
         {
-            if (gameObject == null || boxCollider == null) { return; }
-            boxCollider.rect.Position = transform.Position;
+            if (GameObject == null || boxCollider == null) { return; }
+            boxCollider.rect.Position = transform.Position.ToVector2();
             if (Fill)
             {
                 batch.FillRectangle(boxCollider.rect, Color);

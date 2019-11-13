@@ -1,9 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
-using System.Collections.Generic;
-using Engine;
 namespace Scripts
 {
     public class LineCollider : Collider
@@ -20,22 +16,22 @@ namespace Scripts
         {
             if (staticAngle != null)
             {
-                return transform.Position + new Vector2((float)Math.Cos((float)staticAngle), (float)Math.Sin((float)staticAngle));
+                return transform.Position.ToVector2() + new Vector2((float)Math.Cos((float)staticAngle), (float)Math.Sin((float)staticAngle));
             }
             else
             {
-                return transform.Position + new Vector2((float)Math.Cos(transform.Rotation), (float)Math.Sin(transform.Rotation));
+                return transform.Position.ToVector2() + new Vector2((float)Math.Cos(transform.Rotation.Z), (float)Math.Sin(transform.Rotation.Z));
             }
         }
         public Vector2 GetLineEnd()
         {
             if (staticAngle != null)
             {
-                return transform.Position + new Vector2(-(float)Math.Cos((float)staticAngle), (float)Math.Sin((float)staticAngle)) * length;
+                return transform.Position.ToVector2() + new Vector2(-(float)Math.Cos((float)staticAngle), (float)Math.Sin((float)staticAngle)) * length;
             }
             else
             {
-                return transform.Position + new Vector2(-(float)Math.Cos(transform.Rotation), (float)Math.Sin(transform.Rotation)) * length;
+                return transform.Position.ToVector2() + new Vector2(-(float)Math.Cos(transform.Rotation.Z), (float)Math.Sin(transform.Rotation.Z)) * length;
             }
         }
 

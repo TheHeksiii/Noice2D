@@ -1,11 +1,6 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Engine;
+﻿using Engine;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Scripts
 {
@@ -15,9 +10,9 @@ namespace Scripts
         public Text text;
         public override void Draw(SpriteBatch batch)
         {
-            if (gameObject == null) { return; }
-            batch.DrawString(EditorSceneView.GetInstance().spriteFont, text.Value,
-                        transform.Position, Color, transform.Rotation, Vector2.Zero, transform.Scale, SpriteEffects.None, 0);
+            if (GameObject == null) { return; }
+            batch.DrawString(Scene.GetInstance().spriteFont, text.Value,
+                        transform.Position.ToVector2(), Color, transform.Rotation.Z, Vector2.Zero, transform.Scale.ToVector2(), SpriteEffects.None, 0);
         }
     }
 }

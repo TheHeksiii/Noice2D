@@ -1,19 +1,16 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Engine;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
+using System.Drawing;
 using System.Drawing.Design;
-using System.Threading.Tasks;
+using System.IO;
+using System.Reflection;
 using System.Windows.Forms;
+using ButtonState = System.Windows.Forms.ButtonState;
 using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
-using ButtonState = System.Windows.Forms.ButtonState;
-using System.Drawing;
-using Editor;
-using Engine;
-using System.IO;
 
 namespace Editor
 {
@@ -75,26 +72,24 @@ namespace Editor
         }
         private Microsoft.Xna.Framework.Color GetColorFromClass(object instance)
         {
-            if (instance is Scripts.Renderer)
+            Type sourceType = instance.GetType();
+            PropertyInfo colorField = sourceType.GetProperty("color");
+            if (colorField == null)
             {
-                return ((Scripts.Renderer)instance).Color;
+                colorField = sourceType.GetProperty("Color");
             }
-            else if (instance is Camera)
-            {
-                return ((Camera)instance).BackgroundColor;
-            }
-            return Microsoft.Xna.Framework.Color.White;
+            return (Microsoft.Xna.Framework.Color)colorField?.GetValue(instance);
         }
+
         private void SetColorInClass(object instance, Microsoft.Xna.Framework.Color color)
         {
-            if (instance is Scripts.Renderer)
+            Type sourceType = instance.GetType();
+            PropertyInfo colorField = sourceType.GetProperty("color");
+            if (colorField == null)
             {
-                ((Scripts.Renderer)instance).Color = color;
+                colorField = sourceType.GetProperty("Color");
             }
-            else if (instance is Camera)
-            {
-                ((Camera)instance).BackgroundColor = color;
-            }
+            colorField?.SetValue(instance, color, null);
         }
         public override void PaintValue(PaintValueEventArgs e)
         {
@@ -159,7 +154,7 @@ namespace Editor
 
                     //(context.Instance as Scripts.ImageRenderer).texturePath = Path.Combine("AssetsInUse", openFileDialog.SafeFileName);
 
-                    var scene = EditorSceneView.GetInstance();
+                    var scene = Scene.GetInstance();
 
                     System.IO.Stream stream = TitleContainer.OpenStream(Path.Combine("AssetsInUse", openFileDialog.SafeFileName));
                     value = Texture2D.FromStream(scene.GraphicsDevice, stream);
@@ -169,6 +164,7 @@ namespace Editor
             return value;
         }
     }
+
     public class EffectEditor : UITypeEditor
     {
         public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
@@ -193,7 +189,37 @@ namespace Editor
 
 
                     //(context.Instance as Scripts.Renderer).effect = EditorSceneView.GetInstance().Content.Load<Effect>(openFileDialog.FileName);
-                    value = EditorSceneView.GetInstance().Content.Load<Effect>(openFileDialog.FileName.Replace(".xnb", ""));
+                    value = Scene.GetInstance().Content.Load<Effect>(openFileDialog.FileName.Replace(".xnb", ""));
+                }
+            }
+            return value;
+        }
+    }
+    public class ModelEditor : UITypeEditor
+    {
+        public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
+        {
+            return UITypeEditorEditStyle.Modal;
+        }
+        public override bool GetPaintValueSupported(ITypeDescriptorContext context)
+        {
+            return true;
+        }
+        public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
+        {
+            if (context == null || context.Instance == null || provider == null)
+            {
+                return base.EditValue(context, provider, value);
+            }
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                DialogResult dialogResult = openFileDialog.ShowDialog();
+                if (dialogResult == DialogResult.OK)
+                {
+
+
+                    //(context.Instance as Scripts.Renderer).effect = EditorSceneView.GetInstance().Content.Load<Effect>(openFileDialog.FileName);
+                    value = Scene.GetInstance().Content.Load<Model>(openFileDialog.FileName);
                 }
             }
             return value;

@@ -1,9 +1,8 @@
+using Engine;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Drawing.Design;
-using Microsoft.Xna.Framework;
-using Engine;
 
 namespace Scripts
 {
@@ -70,16 +69,16 @@ namespace Scripts
                     totalY += Points[i].Y;
                 }
 
-                return this.TransformToWorld(new Vector2(totalX / (float)Points.Count, totalY / (float)Points.Count));
+                return this.TransformToWorld(new Vector3(totalX / (float)Points.Count, totalY / (float)Points.Count, 0)).ToVector2();
             }
         }
         float lastRotation = 0;
         public override void Update()
         {
-            if (transform.Rotation != lastRotation)
+            if (transform.Rotation.Z != lastRotation)
             {
-                SetRotation(transform.Rotation);
-                lastRotation = transform.Rotation;
+                SetRotation(transform.Rotation.Z);
+                lastRotation = transform.Rotation.Z;
 
             }
             base.Update();

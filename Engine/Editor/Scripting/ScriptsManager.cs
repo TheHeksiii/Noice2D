@@ -1,19 +1,12 @@
-﻿using System;
+﻿using Microsoft.CodeDom.Providers.DotNetCompilerPlatform;
+using Scripts;
+using System;
+using System.CodeDom;
+using System.CodeDom.Compiler;
 using System.IO;
 using System.Reflection;
 using System.Reflection.Emit;
-using System.CodeDom.Compiler;
-using System.CodeDom;
 using System.Text;
-using System.Collections.Generic;
-using Microsoft.CodeDom.Providers.DotNetCompilerPlatform;
-using System.Linq;
-using SF = Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.CodeAnalysis.CSharp;
-using Engine;
-using System.Windows.Forms;
-using Scripts;
 
 namespace Scripts
 {

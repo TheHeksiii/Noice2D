@@ -1,22 +1,18 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
+using Scripts;
 using System;
 using System.Collections.Generic;
-using System.Threading;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Scripts;
-using Editor;
 
 namespace Engine
 {
     public static class Physics
     {
-        public static readonly Vector2 gravity = new Vector2(0, -200);
+        public static readonly Vector3 gravity = new Vector3(0, -200, 0);
         public static List<Rigidbody> rigidbodies = new List<Rigidbody>();
 
-        public static readonly int timeStep = 13;//in milliseconds
+        public static readonly int timeStep = 40;//in milliseconds
 
         private static Task physicsTask;
 
@@ -43,7 +39,7 @@ namespace Engine
         {
             for (int i = 0; i < rigidbodies.Count; i++)
             {
-                rigidbodies[i].Velocity = Vector2.Zero;
+                rigidbodies[i].Velocity = Vector3.Zero;
             }
         }
         public static void StopPhysics()
@@ -55,7 +51,7 @@ namespace Engine
             if (rb1 == null || rb2 == null ||
                 rb1.collider == null || rb2.collider == null ||
                 rb1.transform == null || rb2.transform == null ||
-                rb1.gameObject == null || rb2.gameObject == null) { return; }
+                rb1.GameObject == null || rb2.GameObject == null) { return; }
             if (rb1.Intersects(rb2, rb1.GetPositionOnNextFrame(), rb2.GetPositionOnNextFrame()).intersects)
             {
                 if (rb1.IsTrigger == false && rb2.IsTrigger == false)
@@ -107,18 +103,18 @@ namespace Engine
                 rb2.Velocity = gravity * 0;
                 rb1.Velocity = gravity * 0;
 
-                Vector2 rb1OldVelocity = rb1.Velocity;
-                Vector2 rb2OldVelocity = rb2.Velocity;
+                Vector3 rb1OldVelocity = rb1.Velocity;
+                Vector3 rb2OldVelocity = rb2.Velocity;
 
-                Vector2 velocities = rb1OldVelocity + rb2OldVelocity;
+                Vector3 velocities = rb1OldVelocity + rb2OldVelocity;
 
-                Vector2 rb1_NextFramePosition = rb1.GetPositionOnNextFrame();
-                Vector2 rb2_NextFramePosition = rb2.GetPositionOnNextFrame();
+                Vector3 rb1_NextFramePosition = rb1.GetPositionOnNextFrame();
+                Vector3 rb2_NextFramePosition = rb2.GetPositionOnNextFrame();
 
-                Vector2 from2to1 = rb2_NextFramePosition - rb1_NextFramePosition;
+                Vector3 from2to1 = rb2_NextFramePosition - rb1_NextFramePosition;
                 from2to1 = from2to1 / (rb1.GetComponent<CircleCollider>().Radius + rb2.GetComponent<CircleCollider>().Radius);
                 from2to1.Normalize();
-                from2to1 = from2to1 * new Vector2(50 + velocities.Length() / 3, 0);
+                from2to1 = from2to1 * new Vector3(50 + velocities.Length() / 3, 0, 0);
 
                 rb1.AngularVelocity += -from2to1.X * 0.01f;
                 rb2.AngularVelocity += from2to1.X * 0.01f;
@@ -146,11 +142,11 @@ namespace Engine
         /// </summary>
         static void CorrectVelocityRectangleLine(Rigidbody rectangle, Rigidbody line)
         {
-            Vector2 oldVelocity = rectangle.Velocity;
-            Vector2 circleDir = rectangle.Velocity;
+            Vector2 oldVelocity = rectangle.Velocity.ToVector2();
+            Vector2 circleDir = rectangle.Velocity.ToVector2();
             circleDir.Normalize();
 
-            Vector2 rectangleNextFramePosition = rectangle.GetPositionOnNextFrame();
+            Vector2 rectangleNextFramePosition = rectangle.GetPositionOnNextFrame().ToVector2();
 
             var lineStart = line.GetComponent<LineCollider>().GetLineStart();
             var lineEnd = line.GetComponent<LineCollider>().GetLineEnd();
@@ -204,15 +200,15 @@ namespace Engine
             Vector2 reflected = Vector2.Reflect(oldVelocity, from2To1Dir);
 
             // move rb along collider
-            rectangle.Velocity = reflected + gravity * Time.deltaTime;
+            rectangle.Velocity = reflected.ToVector3() + gravity * Time.deltaTime;
         }
         static void CorrectVelocityCircleLine(Rigidbody circle, Rigidbody line)
         {
-            Vector2 oldVelocity = circle.Velocity;
-            Vector2 circleDir = circle.Velocity;
+            Vector2 oldVelocity = circle.Velocity.ToVector2();
+            Vector2 circleDir = circle.Velocity.ToVector2();
             circleDir.Normalize();
 
-            Vector2 circleRB_NextFramePosition = circle.GetPositionOnNextFrame();
+            Vector2 circleRB_NextFramePosition = circle.GetPositionOnNextFrame().ToVector2();
 
             var lineStart = line.GetComponent<LineCollider>().GetLineStart();
             var lineEnd = line.GetComponent<LineCollider>().GetLineEnd();
@@ -225,12 +221,11 @@ namespace Engine
             }
 
 
-            Vector2 from2To1 = circle.transform.Position - onLine;
+            Vector2 from2To1 = circle.transform.Position.ToVector2() - onLine;
 
 
             Vector2 from2To1Dir = new Vector2(from2To1.X, from2To1.Y);
             from2To1Dir.Normalize();
-
             Vector2 reflected = Vector2.Reflect(oldVelocity, from2To1Dir);
 
             circle.AngularVelocity = lineDir.X;
@@ -238,7 +233,7 @@ namespace Engine
             // move rb along collider
             //circle.Velocity = lineDir * Time.deltaTime;
 
-            circle.Velocity = gravity * Time.deltaTime + ((circle.transform.Position * lineDir * lineDir.Y) - (circle.transform.Position)) * Time.deltaTime;
+            circle.Velocity = gravity * Time.deltaTime + ((circle.transform.Position * lineDir.ToVector3() * lineDir.Y) - circle.transform.Position) * Time.deltaTime;
 
             //circle.Velocity =gravity * Time.deltaTime + new Vector2(0, -lineDir.Y * 100);
 
@@ -269,8 +264,8 @@ namespace Engine
                 {
                     for (int j = i; j < rigidbodies.Count; j++)
                     {
-                        if (j == i || rigidbodies[i].Enabled == false || rigidbodies[i].gameObject.Active == false ||
-                            rigidbodies[j].Enabled == false || rigidbodies[j].gameObject.Active == false) { continue; }
+                        if (j == i || rigidbodies[i].Enabled == false || rigidbodies[i].GameObject.Active == false ||
+                            rigidbodies[j].Enabled == false || rigidbodies[j].GameObject.Active == false) { continue; }
 
                         CheckForCollisionOnNextFrame(rigidbodies[i],
                            rigidbodies[j]);

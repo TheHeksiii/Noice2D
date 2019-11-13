@@ -1,10 +1,5 @@
 ﻿using Engine;
 using Scripts;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Editor
@@ -22,6 +17,17 @@ namespace Editor
                     (Nodes[i] as HierarchyNode).Component == obj) { return (Nodes[i] as HierarchyNode); }
             }
             return null;
+        }
+        public object GetTag()
+        {
+            if (GameObject != null)
+            {
+                return GameObject;
+            }
+            else
+            {
+                return Component;
+            }
         }
     }
 }

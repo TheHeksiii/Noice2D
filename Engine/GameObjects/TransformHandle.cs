@@ -1,12 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using MonoGame.Extended;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Scripts;
+using System;
 namespace Engine
 {
     [Serializable]
@@ -38,9 +32,9 @@ namespace Engine
         public override void Awake()
         {
             objectSelected = false;
-            gameObject.updateWhenDisabled = true;
+            GameObject.updateWhenDisabled = true;
 
-            gameObject.AddComponent<Rigidbody>().IsStatic = true;
+            GameObject.AddComponent<Rigidbody>().IsStatic = true;
             GetComponent<Rigidbody>().IsButton = true;
 
             if (GetComponents<BoxRenderer>().Count > 2)
@@ -55,18 +49,18 @@ namespace Engine
             }
             else
             {
-                boxColliderXY = gameObject.AddComponent<BoxCollider>();
-                boxColliderXY.rect = new Rectangle(0,0, 20, 20);
+                boxColliderXY = GameObject.AddComponent<BoxCollider>();
+                boxColliderXY.rect = new Rectangle(0, 0, 20, 20);
 
-                boxColliderX = gameObject.AddComponent<BoxCollider>();
+                boxColliderX = GameObject.AddComponent<BoxCollider>();
                 boxColliderX.rect = new Rectangle(0, 0, 50, 5);
 
-                boxColliderY = gameObject.AddComponent<BoxCollider>();
+                boxColliderY = GameObject.AddComponent<BoxCollider>();
                 boxColliderY.rect = new Rectangle(0, 0, 5, 50);
 
-                boxRendererXY = gameObject.AddComponent<BoxRenderer>();
-                boxRendererX = gameObject.AddComponent<BoxRenderer>();
-                boxRendererY = gameObject.AddComponent<BoxRenderer>();
+                boxRendererXY = GameObject.AddComponent<BoxRenderer>();
+                boxRendererX = GameObject.AddComponent<BoxRenderer>();
+                boxRendererY = GameObject.AddComponent<BoxRenderer>();
 
                 boxRendererXY.Color = Color.Orange;
                 boxRendererX.Color = Color.Red;
@@ -76,19 +70,18 @@ namespace Engine
                 boxRendererXY.boxCollider = boxColliderXY;
                 boxRendererY.boxCollider = boxColliderY;
             }
-
             base.Awake();
         }
         public override void Update()
         {
             if (objectSelected == false)
             {
-                gameObject.Active = false;
+                GameObject.Active = false;
                 return;
             }
             else
             {
-                gameObject.Active = true;
+                GameObject.Active = true;
             }
 
             if (MouseInput.Position.In(boxColliderX).intersects)
@@ -118,9 +111,9 @@ namespace Engine
             base.Update();
         }
 
-        public void Move(Vector2 deltaVector)
+        public void Move(Vector3 deltaVector)
         {
-            Vector2 moveVector = Vector2.Zero;
+            Vector3 moveVector = Vector3.Zero;
             switch (CurrentAxisSelected)
             {
                 case Axis.X:

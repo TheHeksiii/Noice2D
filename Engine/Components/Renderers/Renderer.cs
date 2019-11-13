@@ -1,14 +1,10 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Engine;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended;
-using System;
-using System.Diagnostics;
 using System.Drawing.Design;
-using Engine;
 namespace Scripts
 {
-    public class Renderer : Component
+    public class Renderer : Component, Engine.IColorable
     {
         public virtual void Draw(SpriteBatch batch) { }
         [System.ComponentModel.Editor(typeof(Editor.ColorPickerEditor), typeof(UITypeEditor))]

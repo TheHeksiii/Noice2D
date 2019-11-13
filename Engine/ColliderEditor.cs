@@ -1,14 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Xna.Framework.Graphics;
-using Scripts;
-using MonoGame.Extended;
-using Engine;
+﻿using Engine;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using MonoGame.Extended;
+using Scripts;
+using System.Collections.Generic;
 namespace Editor
 {
     public class ColliderEditor
@@ -35,6 +30,7 @@ namespace Editor
             dynamicVertex.AddComponent<BoxRenderer>().Fill = true;
             dynamicVertex.GetComponent<BoxRenderer>().Color = Color.HotPink;
             dynamicVertex.Awake();
+            dynamicVertex.Active = false;
             // Dynamic vertex >>>>>>>>>>>>>>>
 
             MouseInput.Mouse1Clicked += OnMouseLeftClick;
@@ -96,7 +92,7 @@ namespace Editor
             {
                 verticeGameObjects[(int)vertexIndex].GetComponent<Renderer>().Color = Color.DeepSkyBlue;
                 selectedPoint = verticeGameObjects[(int)vertexIndex];
-                offset = -selectedPoint.TransformToLocal(MouseInput.Position);
+                offset = -selectedPoint.TransformToLocal(MouseInput.Position.ToVector3()).ToVector2();
             }
 
 
@@ -125,7 +121,7 @@ namespace Editor
 
                 // creating new Point
                 SilentGameObject pointGO = new SilentGameObject(name: "ColliderEditor point");
-                pointGO.transform.Position = MouseInput.Position;
+                pointGO.transform.Position = MouseInput.Position.ToVector3();
                 BoxCollider boxCollider = pointGO.AddComponent<BoxCollider>();
                 boxCollider.rect = new RectangleF(0, 0, 10, 10);
 
@@ -146,7 +142,6 @@ namespace Editor
             {
                 editing = true;
                 ToggleEditing();
-                Tools.SetSelectTool();
             }
         }
 
@@ -160,10 +155,10 @@ namespace Editor
                     verticeGameObjects[i].Active = false;
                 }
                 verticeGameObjects.Clear();
-                var a = EditorSceneView.GetInstance().GetSelectedGameObject();
-                collider = EditorSceneView.GetInstance().GetSelectedGameObject()?.GetComponent<Collider>();
+                var a = Scene.GetInstance().GetSelectedGameObject();
+                collider = Scene.GetInstance().GetSelectedGameObject()?.GetComponent<Collider>();
 
-                EditorSceneView.GetInstance().transformHandle.gameObject.Active = false;
+                Scene.GetInstance().transformHandle.GameObject.Active = false;
 
                 polygonCollider = (PolygonCollider)collider;
                 if (polygonCollider != null)
@@ -171,7 +166,7 @@ namespace Editor
                     for (int i = 0; i < polygonCollider.Points.Count; i++)
                     {
                         SilentGameObject pointGO = new SilentGameObject(name: "ColliderEditor point");
-                        pointGO.transform.Position = polygonCollider.TransformToWorld(polygonCollider.Points[i]);
+                        pointGO.transform.Position = polygonCollider.TransformToWorld(polygonCollider.Points[i].ToVector3());
                         BoxCollider boxCollider = pointGO.AddComponent<BoxCollider>();
                         boxCollider.rect = new RectangleF(0, 0, 10, 10);
 
@@ -201,8 +196,8 @@ namespace Editor
 
             for (int i = 0; i < verticeGameObjects.Count; i++) // update all vertice DOTS positions
             {
-                verticeGameObjects[i].transform.Position = polygonCollider.TransformToWorld(polygonCollider.Points[i]) - verticeBoxOffset +
-                    ((selectedPoint != null && verticeGameObjects[i] == selectedPoint) ? offset : Vector2.Zero);
+                verticeGameObjects[i].transform.Position = (polygonCollider.TransformToWorld(polygonCollider.Points[i]) - verticeBoxOffset +
+                    ((selectedPoint != null && verticeGameObjects[i] == selectedPoint) ? offset : Vector2.Zero)).ToVector3();
             }
 
             if (selectedPoint != null) // we have selected vertex
@@ -210,11 +205,11 @@ namespace Editor
                 dynamicVertex.Active = false;
                 if (Keyboard.GetState().IsKeyDown(Keys.LeftControl))
                 {
-                    selectedPoint.transform.Position = Extensions.TranslateToGrid(MouseInput.Position);
+                    selectedPoint.transform.Position = Extensions.TranslateToGrid(MouseInput.Position).ToVector3();
                 }
                 else
                 {
-                    selectedPoint.transform.Position = MouseInput.Position + offset;
+                    selectedPoint.transform.Position = (MouseInput.Position + offset).ToVector3();
                 }
                 //polygonCollider.localPoints[verticeGameObjects.IndexOf(selectedPoint)] = selectedPoint.GetComponent<BoxCollider>().rect.Center - polygonCollider.Transform.Position;
                 polygonCollider.Points[verticeGameObjects.IndexOf(selectedPoint)] = polygonCollider.TransformToLocal(MouseInput.Position) + verticeBoxOffset + offset;
@@ -243,7 +238,7 @@ namespace Editor
                     Vector2 pointOnLine = Vector2.Zero;
                     for (int i = 0; i < polygonCollider.Points.Count; i++) // find closest line
                     {
-                        Vector2 point1 = polygonCollider.TransformToWorld(polygonCollider.Points[i]);
+                        Vector2 point1 = polygonCollider.TransformToWorld(polygonCollider.Points[i].ToVector3()).ToVector2();
                         Vector2 point2 = i + 1 >= polygonCollider.Points.Count ? polygonCollider.TransformToWorld(polygonCollider.Points[0]) : polygonCollider.TransformToWorld(polygonCollider.Points[i + 1]);
                         var dist = PhysicsExtensions.DistanceFromLine(point1, point2, MouseInput.Position);
                         if (dist < minDistance)
@@ -255,7 +250,7 @@ namespace Editor
                     if (Vector2.Distance(pointOnLine, MouseInput.Position) < 10) // dont do anything if we are too far away from line
                     {
                         dynamicVertex.Active = true;
-                        dynamicVertex.transform.Position = pointOnLine - dynamicVertex.GetComponent<BoxCollider>().rect.Size.ToVector2() / 2;
+                        dynamicVertex.transform.Position = (pointOnLine - dynamicVertex.GetComponent<BoxCollider>().rect.Size.ToVector2() / 2).ToVector3();
                     }
                     else
                     {

@@ -1,6 +1,4 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using System;
 using Color = System.Drawing.Color;
 
@@ -28,6 +26,21 @@ public static class Extensions
             return vector.Y;
         }
     }
+    public static float MaxVectorMember(this Vector3 vector)
+    {
+        if (vector.X >= vector.Y && vector.X >= vector.Z)
+        {
+            return vector.X;
+        }
+        if (vector.Y >= vector.X && vector.Y >= vector.Z)
+        {
+            return vector.Y;
+        }
+        else
+        {
+            return vector.Z;
+        }
+    }
     public static Vector2 MinY(Vector2 vector1, Vector2 vector2)
     {
         if (vector1.Y < vector2.Y)
@@ -39,6 +52,9 @@ public static class Extensions
             return vector2;
         }
     }
+
+
+    //  Vector2
     public static Vector2 VectorX(this Vector2 vector)
     {
         return new Vector2(vector.X, 0);
@@ -47,6 +63,29 @@ public static class Extensions
     {
         return new Vector2(0, vector.Y);
     }
+
+    //  Vector3
+    public static Vector3 VectorX(this Vector3 vector)
+    {
+        return new Vector3(vector.X, 0, 0);
+    }
+    public static Vector3 VectorY(this Vector3 vector)
+    {
+        return new Vector3(0, vector.Y, 0);
+    }
+    public static Vector3 VectorZ(this Vector3 vector)
+    {
+        return new Vector3(0, 0, vector.Z);
+    }
+
+
+
+
+    public static MonoGame.Extended.Point2 ToPoint2(this Vector3 vector)
+    {
+        return new MonoGame.Extended.Point2(vector.X, vector.Y);
+    }
+
     public static System.Drawing.Point ToSystemPoint(this Microsoft.Xna.Framework.Point point)
     {
         return new System.Drawing.Point(point.X, point.Y);
@@ -59,10 +98,32 @@ public static class Extensions
     {
         return new Vector2(point.X, point.Y);
     }
+    public static Vector2 ToVector2(this Vector3 point)
+    {
+        return new Vector2(point.X, point.Y);
+    }
+    public static Vector3 ToVector3(this Vector2 point)
+    {
+        return new Vector3(point.X, point.Y, 0);
+    }
     public static Vector2 ToVector2(this MonoGame.Extended.Size2 point)
     {
         return new Vector2(point.Width, point.Height);
     }
+    public static Vector3 ToVector3(this Microsoft.Xna.Framework.Point point)
+    {
+        return new Vector3(point.X, point.Y, 0);
+    }
+    public static Vector2 Normalized(this Vector2 vec)
+    {
+        Vector2 v = new Vector2(vec.X / vec.Length(), vec.Y / vec.Length());
+        if (vec.Length() == 0)
+        {
+            v = Vector2.Zero;
+        }
+        return v;
+    }
+
     public static System.Drawing.Color ToOtherColor(this Microsoft.Xna.Framework.Color color)
     {
         return System.Drawing.Color.FromArgb(color.A, color.R, color.G, color.B);
@@ -153,6 +214,10 @@ public static class Extensions
     public static Vector2 Round(this Vector2 vector)
     {
         return new Vector2((float)Math.Round((decimal)vector.X, 2), (float)Math.Round((decimal)vector.Y, 2));
+    }
+    public static Vector3 Round(this Vector3 vector)
+    {
+        return new Vector3((float)Math.Round((decimal)vector.X, 2), (float)Math.Round((decimal)vector.Y, 2), (float)Math.Round((decimal)vector.Z, 2));
     }
     public static System.Drawing.Point Round(this System.Drawing.Point point, int scale)
     {

@@ -1,12 +1,11 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using Point = System.Drawing.Point;
 using Color = System.Drawing.Color;
+using Point = System.Drawing.Point;
 using Rectangle = System.Drawing.Rectangle;
-using System.Threading;
-using System;
-using System.Diagnostics;
 
 namespace Editor
 {

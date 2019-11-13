@@ -1,10 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
-using System;
-using System.Diagnostics;
-using Engine;
 
 namespace Scripts
 {
@@ -14,7 +10,7 @@ namespace Scripts
         public int? Sides = null;
         public override void Draw(SpriteBatch batch)
         {
-            if (gameObject == null) { return; }
+            if (GameObject == null) { return; }
             circle.Radius = Extensions.MaxVectorMember(transform.Scale);
             circle.Center = new Point2((int)transform.Position.X, (int)transform.Position.Y);
             if (Fill)

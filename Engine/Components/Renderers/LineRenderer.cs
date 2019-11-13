@@ -1,10 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Engine;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using MonoGame.Extended;
-using System;
-using System.Diagnostics;
-using Engine;
 namespace Scripts
 {
     public class LineRenderer : Renderer
@@ -22,7 +18,7 @@ namespace Scripts
         }
         public override void Draw(SpriteBatch batch)
         {
-            if (gameObject == null || lineCollider == null) { return; }
+            if (GameObject == null || lineCollider == null) { return; }
 
             batch.DrawLine(lineCollider.GetLineStart(), lineCollider.GetLineEnd(), Color, StrokeSize);
             /*batch.DrawPoint(lineCollider.GetLineStart(), Color.Red, StrokeSize * 4);
