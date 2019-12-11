@@ -7,9 +7,15 @@ namespace Scripts
 {
     public class PolygonRenderer : Renderer
     {
-        [LinkableComponent]
+        //[LinkableComponent]
         public PolygonCollider polygonCollider;
         public bool editingPoints = false;
+
+        public override void Awake()
+        {
+            polygonCollider = GetComponent<PolygonCollider>();
+            base.Awake();
+        }
         public override void Draw(SpriteBatch batch)
         {
             if (GameObject == null || polygonCollider == null) { return; }

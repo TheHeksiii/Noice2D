@@ -65,23 +65,19 @@ public static class Extensions
     }
 
     //  Vector3
-    public static Vector3 VectorX(this Vector3 vector)
+    public static Vector2 VectorX(this Vector3 vector)
     {
-        return new Vector3(vector.X, 0, 0);
+        return new Vector2(vector.X, 0);
     }
-    public static Vector3 VectorY(this Vector3 vector)
+    public static Vector2 VectorY(this Vector3 vector)
     {
-        return new Vector3(0, vector.Y, 0);
-    }
-    public static Vector3 VectorZ(this Vector3 vector)
-    {
-        return new Vector3(0, 0, vector.Z);
+        return new Vector2(0, vector.Y);
     }
 
 
 
 
-    public static MonoGame.Extended.Point2 ToPoint2(this Vector3 vector)
+    public static MonoGame.Extended.Point2 ToPoint2(this Vector2 vector)
     {
         return new MonoGame.Extended.Point2(vector.X, vector.Y);
     }

@@ -12,9 +12,17 @@ namespace Launcher
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Editor.Editor());
+            bool runEditor = true;
+            if (runEditor)
+            {
+                Application.Run(new Editor.Editor());
+            }
+            else
+            {
+                var scene = new Engine.Scene();
+                scene.Run();
 
-            //Application.Run(new Editor.ImageEditor.Form1());
+            }
         }
     }
 }

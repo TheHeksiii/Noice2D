@@ -12,7 +12,7 @@ namespace Scripts
         public override void Draw(SpriteBatch batch)
         {
             if (GameObject == null || boxCollider == null) { return; }
-            boxCollider.rect.Position = transform.Position.ToVector2();
+            boxCollider.rect.Position = transform.Position;
             if (Fill)
             {
                 batch.FillRectangle(boxCollider.rect, Color);

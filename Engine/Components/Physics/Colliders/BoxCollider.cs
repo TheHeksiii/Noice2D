@@ -8,7 +8,7 @@ namespace Scripts
     {
         public RectangleF rect;
         [ShowInEditor]
-        public Vector2 Size { get { return rect.Size.ToVector2(); } set { rect.Size = value; } }
+        public Vector2 Size { get { return rect.Size; } set { rect.Size = value; } }
         public override void Update()
         {
             rect.Position = transform.Position.ToPoint2();

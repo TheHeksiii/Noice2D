@@ -18,7 +18,7 @@ namespace Engine
         public override void Update()
         {
 
-            /*if (cam.ScreenToWorld(Mouse.GetState().Position.ToVector2()).In(
+            /*if (cam.ScreenToWorld(Mouse.GetState().Position).In(
                 gameObject.transform.position,
                 sprite.texture2D.Width,
                 sprite.texture2D.Height) == true)
@@ -31,7 +31,7 @@ namespace Engine
                 sprite.color = Color.White;
                 mouseIsOver = false;
             }
-            //gameObject.transform.position = Vector2.Lerp(gameObject.transform.position,Mouse.GetState().Position.ToVector2(), 0.1f);
+            //gameObject.transform.position = Vector2.Lerp(gameObject.transform.position,Mouse.GetState().Position, 0.1f);
             if (mouseIsOver == true && Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
                 //just wanted to place button,but maybe still interactable,whatever

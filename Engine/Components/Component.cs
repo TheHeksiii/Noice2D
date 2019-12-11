@@ -39,26 +39,19 @@ namespace Scripts
         }
 
 
-        public Vector3 TransformToWorld(Vector3 localPoint)
+        public Vector2 TransformToWorld(Vector2 localPoint)
         {
             return localPoint + transform.Position;
         }
-        public Vector2 TransformToWorld(Vector2 localPoint)
-        {
-            return localPoint + transform.Position.ToVector2();
-        }
-        public Vector3 TransformToLocal(Vector3 worldPoint)
+
+        public Vector2 TransformToLocal(Vector2 worldPoint)
         {
             return worldPoint - transform.Position;
         }
-        public Vector2 TransformToLocal(Vector2 worldPoint)
-        {
-            return worldPoint - transform.Position.ToVector2();
-        }
-
         // Callbacks
 
         public virtual void Awake() { Awoken = true; }
+        public virtual void Start() { }
         public virtual void Update() { }
         public virtual void OnDestroyed() { }
 

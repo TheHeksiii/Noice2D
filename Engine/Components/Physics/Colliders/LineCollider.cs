@@ -16,22 +16,22 @@ namespace Scripts
         {
             if (staticAngle != null)
             {
-                return transform.Position.ToVector2() + new Vector2((float)Math.Cos((float)staticAngle), (float)Math.Sin((float)staticAngle));
+                return transform.Position + new Vector2((float)Math.Cos((float)staticAngle), (float)Math.Sin((float)staticAngle));
             }
             else
             {
-                return transform.Position.ToVector2() + new Vector2((float)Math.Cos(transform.Rotation.Z), (float)Math.Sin(transform.Rotation.Z));
+                return transform.Position + new Vector2((float)Math.Cos(transform.Rotation), (float)Math.Sin(transform.Rotation));
             }
         }
         public Vector2 GetLineEnd()
         {
             if (staticAngle != null)
             {
-                return transform.Position.ToVector2() + new Vector2(-(float)Math.Cos((float)staticAngle), (float)Math.Sin((float)staticAngle)) * length;
+                return transform.Position + new Vector2(-(float)Math.Cos((float)staticAngle), (float)Math.Sin((float)staticAngle)) * length;
             }
             else
             {
-                return transform.Position.ToVector2() + new Vector2(-(float)Math.Cos(transform.Rotation.Z), (float)Math.Sin(transform.Rotation.Z)) * length;
+                return transform.Position + new Vector2(-(float)Math.Cos(transform.Rotation), (float)Math.Sin(transform.Rotation)) * length;
             }
         }
 

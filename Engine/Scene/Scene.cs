@@ -1,8 +1,6 @@
-﻿using Editor;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGame.Extended;
 using Scripts;
 using System;
 using System.Collections.Generic;
@@ -79,7 +77,7 @@ namespace Engine
         private void CreateDefaultObjects()
         {
             colliderEditor = new ColliderEditor();
-            GameObject transformHandleGameObject = new GameObject();
+            SilentGameObject transformHandleGameObject = new SilentGameObject();
             transformHandleGameObject.AddComponent<TransformHandle>();
             transformHandleGameObject.Name = "Transform Handle";
             transformHandleGameObject.Active = false;
@@ -139,7 +137,6 @@ namespace Engine
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteFont = Content.Load<SpriteFont>("File");
-
         }
 
         protected override void UnloadContent()
@@ -188,16 +185,9 @@ namespace Engine
         }
         public void OnGameObjectCreated(GameObject gameObject)
         {
-            if (gameObject is SilentGameObject)
-            {
-                gameObjects.Add(gameObject);
 
-                //editorGameObjects.Add(gameObject);
-            }
-            else
-            {
-                gameObjects.Add(gameObject);
-            }
+            gameObjects.Add(gameObject);
+
             GameObjectCreated?.Invoke(this, gameObject);
         }
         public bool LoadScene(string path = null)
@@ -310,14 +300,6 @@ namespace Engine
                 }
             }
         }
-        public GameObject GetSelectedGameObject()
-        {
-            for (int i = 0; i < gameObjects.Count; i++)
-            {
-                if (gameObjects[i].selected) { return gameObjects[i]; }
-            }
-            return null;
-        }
 
         void HandleInput()
         {
@@ -328,70 +310,6 @@ namespace Engine
 
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-/*
-if (Mouse.GetState().LeftButton == ButtonState.Pressed)
-{
-    switch (Tools.CurrentTool)
-    {
-        case Tools.ToolTypes.Select:
-            if (transformHandle.GameObject.Active)
-            {// if mouse is not on axis line, disable gameobject
-                if (transformHandle.clicked)
-                {
-                    transformHandle.Move(MouseInput.Delta.ToVector3());
-                }
-            }
-            break;
-        case Tools.ToolTypes.Circle:
-            spawnTimer -= Time.deltaTime;
-            if (spawnTimer < 0)
-            {
-
-            }
-            break;
-        case Tools.ToolTypes.Box:
-            spawnTimer -= Time.deltaTime;
-            if (drawingBox == false)
-            {
-                drawingBox = true;
-
-                box = new GameObject(MouseInput.Position.ToVector3(), new Vector3(1, 1, 0), "Box");
-                box.AddComponent<BoxCollider>();
-                box.AddComponent<Rigidbody>().UseGravity = false;
-                box.AddComponent<BoxRenderer>();
-
-                box.Awake();
-            }
-            else
-            {
-                box.GetComponent<BoxCollider>().rect = new RectangleF(Vector2.Zero, MouseInput.Position - box.transform.Position.ToVector2());
-            }
-            break;
-        case Tools.ToolTypes.Line:
-            if (drawingLine == false)
-            {
-                drawingLine = true;
-
-                line = new GameObject(MouseInput.Position.ToVector3(), Vector3.One, "Line");
-                line.AddComponent<LineCollider>();
-                line.AddComponent<Rigidbody>().IsStatic = true;
-                line.AddComponent<LineRenderer>();
-                line.Awake();
-
-                line.GetComponent<LineRenderer>().lineStarted = true;
-            }
-            else
-            {
-                // im making 0 from 0
-                line.transform.Rotation = new Vector3(0, 0, Angle.FromVector(line.transform.Position.ToVector2() - MouseInput.Position).Radians);
-                line.GetComponent<LineCollider>().length = Vector2.Distance(
-                    MouseInput.Position,
-                    line.transform.Position.ToVector2());
-            }
-            break;
-    }
-}
-*/
             scrollValue = Mouse.GetState().ScrollWheelValue;
         }
         protected override void Update(GameTime gameTime)
@@ -402,7 +320,7 @@ if (Mouse.GetState().LeftButton == ButtonState.Pressed)
             if (Global.GameRunning == false) { return; }
             Time.deltaTime = (float)gameTime.ElapsedGameTime.TotalSeconds;
             Time.elapsedTime += Time.deltaTime;
-
+            Time.elapsedTicks++;
 
             MouseInput.Update(Mouse.GetState());
 
@@ -438,7 +356,7 @@ if (Mouse.GetState().LeftButton == ButtonState.Pressed)
             GraphicsDevice.Clear(camera.Color);
 
 
-            spriteBatch.Begin(transformMatrix: camera.TranslationMatrix, blendState: BlendState.Opaque, depthStencilState: DepthStencilState.Default);
+            spriteBatch.Begin(transformMatrix: camera.TranslationMatrix, blendState: BlendState.AlphaBlend, samplerState: SamplerState.PointClamp, depthStencilState: DepthStencilState.Default);
             for (int i = 0; i < gameObjects.Count; i++)
             {
                 gameObjects[i].Draw(spriteBatch);
@@ -450,7 +368,7 @@ if (Mouse.GetState().LeftButton == ButtonState.Pressed)
             spriteBatch.End();
             if (Global.EditorAttached)
             {
-                uiBatch.Begin(transformMatrix: camera.TranslationMatrix, blendState: BlendState.Opaque, depthStencilState: DepthStencilState.Default);
+                uiBatch.Begin(transformMatrix: camera.TranslationMatrix, blendState: BlendState.AlphaBlend, depthStencilState: DepthStencilState.Default);
 
                 for (int i = 0; i < editorGameObjects.Count; i++)
                 {

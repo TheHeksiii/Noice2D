@@ -9,7 +9,7 @@ namespace Engine
 {
     public static class Physics
     {
-        public static readonly Vector3 gravity = new Vector3(0, -200, 0);
+        public static readonly Vector2 gravity = new Vector2(0, -200);
         public static List<Rigidbody> rigidbodies = new List<Rigidbody>();
 
         public static readonly int timeStep = 40;//in milliseconds
@@ -39,7 +39,7 @@ namespace Engine
         {
             for (int i = 0; i < rigidbodies.Count; i++)
             {
-                rigidbodies[i].Velocity = Vector3.Zero;
+                rigidbodies[i].Velocity = Vector2.Zero;
             }
         }
         public static void StopPhysics()
@@ -103,18 +103,18 @@ namespace Engine
                 rb2.Velocity = gravity * 0;
                 rb1.Velocity = gravity * 0;
 
-                Vector3 rb1OldVelocity = rb1.Velocity;
-                Vector3 rb2OldVelocity = rb2.Velocity;
+                Vector2 rb1OldVelocity = rb1.Velocity;
+                Vector2 rb2OldVelocity = rb2.Velocity;
 
-                Vector3 velocities = rb1OldVelocity + rb2OldVelocity;
+                Vector2 velocities = rb1OldVelocity + rb2OldVelocity;
 
-                Vector3 rb1_NextFramePosition = rb1.GetPositionOnNextFrame();
-                Vector3 rb2_NextFramePosition = rb2.GetPositionOnNextFrame();
+                Vector2 rb1_NextFramePosition = rb1.GetPositionOnNextFrame();
+                Vector2 rb2_NextFramePosition = rb2.GetPositionOnNextFrame();
 
-                Vector3 from2to1 = rb2_NextFramePosition - rb1_NextFramePosition;
+                Vector2 from2to1 = rb2_NextFramePosition - rb1_NextFramePosition;
                 from2to1 = from2to1 / (rb1.GetComponent<CircleCollider>().Radius + rb2.GetComponent<CircleCollider>().Radius);
                 from2to1.Normalize();
-                from2to1 = from2to1 * new Vector3(50 + velocities.Length() / 3, 0, 0);
+                from2to1 = from2to1 * new Vector2(50 + velocities.Length() / 3, 0);
 
                 rb1.AngularVelocity += -from2to1.X * 0.01f;
                 rb2.AngularVelocity += from2to1.X * 0.01f;
@@ -142,11 +142,11 @@ namespace Engine
         /// </summary>
         static void CorrectVelocityRectangleLine(Rigidbody rectangle, Rigidbody line)
         {
-            Vector2 oldVelocity = rectangle.Velocity.ToVector2();
-            Vector2 circleDir = rectangle.Velocity.ToVector2();
+            Vector2 oldVelocity = rectangle.Velocity;
+            Vector2 circleDir = rectangle.Velocity;
             circleDir.Normalize();
 
-            Vector2 rectangleNextFramePosition = rectangle.GetPositionOnNextFrame().ToVector2();
+            Vector2 rectangleNextFramePosition = rectangle.GetPositionOnNextFrame();
 
             var lineStart = line.GetComponent<LineCollider>().GetLineStart();
             var lineEnd = line.GetComponent<LineCollider>().GetLineEnd();
@@ -155,13 +155,13 @@ namespace Engine
             rect.Position = rectangleNextFramePosition;
 
             Vector2 onLine1 = PhysicsExtensions.ClosestPointOnLine(lineStart, lineEnd, rect.TopLeft);
-            float dist = Vector2.Distance(onLine1, rect.TopLeft.ToVector2());
+            float dist = Vector2.Distance(onLine1, rect.TopLeft);
             Vector2 closestOnLine = onLine1;
             Vector2 closestVertex = rect.TopLeft;
 
 
             Vector2 onLine2 = PhysicsExtensions.ClosestPointOnLine(lineStart, lineEnd, rect.TopLeft + new Vector2(rect.Width, 0));
-            var newDistance = Vector2.Distance(onLine2, rect.TopLeft.ToVector2() + new Vector2(rect.Width, 0));
+            var newDistance = Vector2.Distance(onLine2, rect.TopLeft + new Vector2(rect.Width, 0));
             if (newDistance < dist)
             {
                 closestOnLine = onLine2;
@@ -169,7 +169,7 @@ namespace Engine
             }
 
             Vector2 onLine3 = PhysicsExtensions.ClosestPointOnLine(lineStart, lineEnd, rect.BottomRight);
-            newDistance = Vector2.Distance(onLine2, rect.BottomRight.ToVector2());
+            newDistance = Vector2.Distance(onLine2, rect.BottomRight);
             dist = newDistance > dist ? newDistance : dist;
             if (newDistance < dist)
             {
@@ -178,7 +178,7 @@ namespace Engine
             }
 
             Vector2 onLine4 = PhysicsExtensions.ClosestPointOnLine(lineStart, lineEnd, rect.BottomRight + new Vector2(-rect.Width, 0));
-            newDistance = Vector2.Distance(onLine2, rect.BottomRight.ToVector2() + new Vector2(-rect.Width, 0));
+            newDistance = Vector2.Distance(onLine2, rect.BottomRight + new Vector2(-rect.Width, 0));
             dist = newDistance > dist ? newDistance : dist;
             if (newDistance < dist)
             {
@@ -200,15 +200,15 @@ namespace Engine
             Vector2 reflected = Vector2.Reflect(oldVelocity, from2To1Dir);
 
             // move rb along collider
-            rectangle.Velocity = reflected.ToVector3() + gravity * Time.deltaTime;
+            rectangle.Velocity = reflected + gravity * Time.deltaTime;
         }
         static void CorrectVelocityCircleLine(Rigidbody circle, Rigidbody line)
         {
-            Vector2 oldVelocity = circle.Velocity.ToVector2();
-            Vector2 circleDir = circle.Velocity.ToVector2();
+            Vector2 oldVelocity = circle.Velocity;
+            Vector2 circleDir = circle.Velocity;
             circleDir.Normalize();
 
-            Vector2 circleRB_NextFramePosition = circle.GetPositionOnNextFrame().ToVector2();
+            Vector2 circleRB_NextFramePosition = circle.GetPositionOnNextFrame();
 
             var lineStart = line.GetComponent<LineCollider>().GetLineStart();
             var lineEnd = line.GetComponent<LineCollider>().GetLineEnd();
@@ -221,7 +221,7 @@ namespace Engine
             }
 
 
-            Vector2 from2To1 = circle.transform.Position.ToVector2() - onLine;
+            Vector2 from2To1 = circle.transform.Position - onLine;
 
 
             Vector2 from2To1Dir = new Vector2(from2To1.X, from2To1.Y);
@@ -233,7 +233,7 @@ namespace Engine
             // move rb along collider
             //circle.Velocity = lineDir * Time.deltaTime;
 
-            circle.Velocity = gravity * Time.deltaTime + ((circle.transform.Position * lineDir.ToVector3() * lineDir.Y) - circle.transform.Position) * Time.deltaTime;
+            circle.Velocity = gravity * Time.deltaTime + ((circle.transform.Position * lineDir * lineDir.Y) - circle.transform.Position) * Time.deltaTime;
 
             //circle.Velocity =gravity * Time.deltaTime + new Vector2(0, -lineDir.Y * 100);
 

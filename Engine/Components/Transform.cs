@@ -8,15 +8,15 @@ namespace Scripts
     {
         public override bool Enabled { get { return true; } }
 
-        [ShowInEditor] public Vector3 Scale { get; set; } = Vector3.One;
+        [ShowInEditor] public Vector2 Scale { get; set; } = Vector2.One;
 
         // later remove this, use Vector3 position, dont just use Z in renderer or here, i may need stacked objects un future
 
         //private Vector3 localPosition = Vector3.Zero;
-        private Vector3 rotation;
+        private float rotation;
 
-        //[ShowInEditor] public Vector3 Position { get { return position; /*+ GetPositionFromRotatedParent();*/ } set { position = value; } }
-        [ShowInEditor] public Vector3 Position { get; set; } = Vector3.Zero;
+        [ShowInEditor] public Vector2 Anchor { get; set; } = new Vector2(0, 0);
+        [ShowInEditor] public Vector2 Position { get; set; } = Vector2.Zero;
         /*[ShowInEditor]
         public Vector3 LocalPosition
         {
@@ -29,12 +29,12 @@ namespace Scripts
         }*/
 
         [ShowInEditor]
-        public Vector3 Rotation
+        public float Rotation
         {
             get { return rotation + GetRotationFromParentAsPivot(); }
             set { rotation = value; }
         }
-        public Vector3 GetParentPosition()
+        public Vector2 GetParentPosition()
         {
             if (GameObject?.Parent != null)
             {
@@ -42,24 +42,24 @@ namespace Scripts
             }
             else
             {
-                return new Vector3(0, 0, 0);
+                return new Vector2(0, 0);
             }
         }
-        public Vector3 initialAngleDifferenceFromParent = Vector3.Zero;
-        public Vector3 GetPositionFromRotatedParent()
+        public float initialAngleDifferenceFromParent = 0;
+        public Vector2 GetPositionFromRotatedParent()
         {
             GameObject prnt = GameObject.Parent;
-            if (prnt == null) { return new Vector3(0, 0, 0); }
-            Vector3 point = Vector3.Zero;
+            if (prnt == null) { return new Vector2(0, 0); }
+            Vector2 point = Vector2.Zero;
             while (prnt != null)
             {
-                Vector3 angle = GetRotationFromParentAsPivot() + initialAngleDifferenceFromParent;
-                Vector3 pivot = prnt.transform.Position - transform.Position;
+                float angle = GetRotationFromParentAsPivot() + initialAngleDifferenceFromParent;
+                Vector2 pivot = prnt.transform.Position - transform.Position;
 
-                float sin = (float)Math.Sin(angle.Z);
-                float cos = (float)Math.Cos(angle.Z);
+                float sin = (float)Math.Sin(angle);
+                float cos = (float)Math.Cos(angle);
 
-                var v = new Vector3(-pivot.X, -pivot.Y, 0);
+                var v = new Vector2(-pivot.X, -pivot.Y);
 
                 // rotate point
                 float xnew = v.Y * sin - v.X * cos;
@@ -74,9 +74,9 @@ namespace Scripts
             }
             return point;
         }
-        public Vector3 GetRotationFromParentAsPivot()
+        public float GetRotationFromParentAsPivot()
         {
-            Vector3 rot = Vector3.Zero;
+            float rot = 0;
 
             GameObject par = GameObject?.Parent;
             while (par != null)
@@ -86,11 +86,11 @@ namespace Scripts
             }
             return rot;
         }
-        public Vector3 TransformVector(Vector3 vec)
+        public Vector2 TransformVector(Vector2 vec)
         {
             //float sin = (float)Math.Sin(transform.Rotation.X);
             //float cos = (float)Math.Cos(transform.Rotation.X);
-            //var zRotation = new Vector3(direction.Y * sin - direction.X * cos, direction.X * sin + direction.Y * cos, transform.Rotation.Z);
+            //var zRotation = new Vector3(direction.Y * sin - direction.X * cos, direction.X * sin + direction.Y * cos, transform.Rotation);
             //return zRotation;
 
 
@@ -103,17 +103,16 @@ namespace Scripts
             var f = Vector3.Transform(Vector3.Zero, Matrix.CreateTranslation(new Vector3(10, 10, 10)) * Matrix.CreateRotationZ(90 * (float)Math.PI / 180));
 
             var q = Quaternion.CreateFromRotationMatrix(
-                Matrix.CreateRotationX(transform.rotation.X) *
-                Matrix.CreateRotationY(transform.rotation.Y) *
+                Matrix.CreateRotationX(transform.rotation) *
+                Matrix.CreateRotationY(transform.rotation) *
                 Matrix.CreateRotationZ(0));
 
 
-            // Matrix rotation = Matrix.CreateFromYawPitchRoll(transform.rotation.Y, transform.rotation.Z, transform.rotation.X);
+            // Matrix rotation = Matrix.CreateFromYawPitchRoll(transform.rotation.Y, transform.Rotation, transform.rotation.X);
             //Vector3 translation = Vector3.Transform(vec, rotation);
-            return transform.Position + Matrix.CreateFromQuaternion(q).Backward;
+            return transform.Position + Matrix.CreateFromQuaternion(q).Backward.ToVector2();
 
         }
-        public Vector3 forward { get { return Position + TransformVector(new Vector3(0, 1, 0)); } }
-        public Vector3 up { get { return Position + TransformVector(new Vector3(0, 0, 1)); } }
+        public Vector2 up { get { return Position + TransformVector(new Vector2(0, 1)); } }
     }
 }

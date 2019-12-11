@@ -12,7 +12,7 @@ namespace Scripts
         {
             if (GameObject == null) { return; }
             batch.DrawString(Scene.GetInstance().spriteFont, text.Value,
-                        transform.Position.ToVector2(), Color, transform.Rotation.Z, Vector2.Zero, transform.Scale.ToVector2(), SpriteEffects.None, 0);
+                        transform.Position, Color, transform.Rotation, Vector2.Zero, transform.Scale, SpriteEffects.None, 0);
         }
     }
 }

@@ -9,14 +9,16 @@ namespace Scripts
     public class PolygonCollider : Collider
     {
         public delegate void PointsEditor();
-        [System.ComponentModel.Editor(typeof(Editor.MethodEditor), typeof(UITypeEditor))]
+        //[System.ComponentModel.Editor(typeof(Editor.MethodEditor), typeof(UITypeEditor))]
         [ShowInEditor]
         [System.Xml.Serialization.XmlIgnore]
-        public PointsEditor OnPointsEdit { get; set; } = Editor.ColliderEditor.GetInstance().ToggleEditing;
+        public PointsEditor OnPointsEdit { get; set; } = Engine.ColliderEditor.GetInstance().ToggleEditing;
 
         /// <summary>
         /// LOCAL points
         /// </summary>
+
+        [ShowInEditor]
         public List<Vector2> Points { get; } = new List<Vector2>();
         public List<Vector2> OriginalPoints { get; } = new List<Vector2>();
 
@@ -69,16 +71,16 @@ namespace Scripts
                     totalY += Points[i].Y;
                 }
 
-                return this.TransformToWorld(new Vector3(totalX / (float)Points.Count, totalY / (float)Points.Count, 0)).ToVector2();
+                return this.TransformToWorld(new Vector2(totalX / (float)Points.Count, totalY / (float)Points.Count));
             }
         }
         float lastRotation = 0;
         public override void Update()
         {
-            if (transform.Rotation.Z != lastRotation)
+            if (transform.Rotation != lastRotation)
             {
-                SetRotation(transform.Rotation.Z);
-                lastRotation = transform.Rotation.Z;
+                SetRotation(transform.Rotation);
+                lastRotation = transform.Rotation;
 
             }
             base.Update();

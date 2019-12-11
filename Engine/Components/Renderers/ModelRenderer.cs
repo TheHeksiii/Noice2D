@@ -53,7 +53,7 @@
 //                        Matrix.CreateScale(transform.Scale.MaxVectorMember()) *
 //                        Matrix.CreateRotationX(transform.Rotation.X) *
 //                        Matrix.CreateRotationY(transform.Rotation.Y) *
-//                        Matrix.CreateRotationZ(transform.Rotation.Z) *
+//                        Matrix.CreateRotationZ(transform.Rotation) *
 //                        Matrix.CreateTranslation(transform.Position);
 
 //                    // Move the camera 8 units away from the origin:
@@ -88,7 +88,7 @@
 
 
 //                    effect.LightingEnabled = true; // turn on the lighting subsystem.
-//                    //effect.DiffuseColor = Color.White.ToVector3() * 4f;
+//                    //effect.DiffuseColor = Color.White * 4f;
 //                    effect.DirectionalLight0.DiffuseColor = new Vector3(1f, 0, 0); // a red light
 //                    effect.DirectionalLight0.Direction = new Vector3(-1, 1, 0);  // coming along the x-axis
 //                    effect.DirectionalLight0.SpecularColor = new Vector3(0, 1, 0); // with green highlights

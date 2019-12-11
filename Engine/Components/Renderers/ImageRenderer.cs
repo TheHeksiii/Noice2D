@@ -6,25 +6,31 @@ namespace Scripts
 {
     public class ImageRenderer : Renderer
     {
-        [System.ComponentModel.Editor(typeof(Editor.TextureEditor), typeof(System.Drawing.Design.UITypeEditor))]
+        //[System.ComponentModel.Editor(typeof(Editor.TextureEditor), typeof(System.Drawing.Design.UITypeEditor))]
         [System.Xml.Serialization.XmlIgnore] [ShowInEditor] public Texture2D texture { get; set; }
         public string texturePath;
+
         public override void Awake()
         {
             if (texture == null && texturePath != null)
             {
-                var scene = Scene.GetInstance();
-                System.IO.Stream stream = TitleContainer.OpenStream(texturePath);
-                texture = Texture2D.FromStream(scene.GraphicsDevice, stream);
-                stream.Close();
+                LoadTexture(texturePath);
             }
             base.Awake();
+        }
+        public void LoadTexture(string texturePath)
+        {
+            System.IO.Stream stream = TitleContainer.OpenStream(texturePath);
+            texture = Texture2D.FromStream(Scene.GetInstance().GraphicsDevice, stream);
+            stream.Close();
+            OnTextureLoaded(texture);
         }
         public override void Draw(SpriteBatch batch)
         {
             if (GameObject == null || texture == null) { return; }
-            batch.Draw(texture: texture, position: transform.Position.ToVector2(), color: this.Color, rotation: -transform.Rotation.Z, scale: transform.Scale.ToVector2()
-                , origin: new Microsoft.Xna.Framework.Vector2(texture.Width / 2, texture.Height / 2));
+            batch.Draw(texture: texture, position: transform.Position, color: this.Color, rotation: -transform.Rotation, scale: transform.Scale
+                , origin: new Microsoft.Xna.Framework.Vector2(transform.Anchor.X * texture.Width, transform.Anchor.Y * texture.Height));
+
             base.Draw(batch);
         }
     }

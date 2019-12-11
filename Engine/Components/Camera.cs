@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Scripts;
 namespace Engine
 {
@@ -17,7 +18,7 @@ namespace Engine
             instance = this;
             Zoom = 1f;
         }
-        [System.ComponentModel.Editor(typeof(Editor.ColorPickerEditor), typeof(System.Drawing.Design.UITypeEditor))]
+        //[System.ComponentModel.Editor(typeof(Editor.ColorPickerEditor), typeof(System.Drawing.Design.UITypeEditor))]
         [ShowInEditor] public Color Color { get; set; } = new Color(34, 34, 34);
 
 
@@ -29,18 +30,15 @@ namespace Engine
 
         [ShowInEditor] public Vector2 Size { get; set; } = new Vector2(800, 600);
 
-
         public Matrix TranslationMatrix
         {
             get
             {
                 return
                 Matrix.CreateScale(new Vector3(Zoom, Zoom, 1)) *
-                Matrix.CreateRotationX(transform.Rotation.X) *
-                Matrix.CreateRotationY(transform.Rotation.Z) *
-                Matrix.CreateRotationZ(transform.Rotation.Y) *
+                Matrix.CreateRotationZ(transform.Rotation) *
                 Matrix.CreateTranslation(-(int)transform.Position.X,
-                   -(int)transform.Position.Y, -(int)transform.Position.Z);
+                   -(int)transform.Position.Y, 0);
                 //Matrix.CreateRotationZ(Rotation);
             }
         }
@@ -54,19 +52,19 @@ namespace Engine
             }
         }
 
-        public void Move(Vector3 moveVector)
+        public void Move(Vector2 moveVector)
         {
             transform.Position += moveVector;
         }
 
-        public Vector3 WorldToScreen(Vector3 worldPosition)
+        public Vector2 WorldToScreen(Vector2 worldPosition)
         {
-            return Vector3.Transform(worldPosition, TranslationMatrix);
+            return Vector2.Transform(worldPosition, TranslationMatrix);
         }
 
-        public Vector3 ScreenToWorld(Vector3 screenPosition)
+        public Vector2 ScreenToWorld(Vector2 screenPosition)
         {
-            return Vector3.Transform(screenPosition,
+            return Vector2.Transform(screenPosition,
                 Matrix.Invert(TranslationMatrix));
         }
         public override void Update()
@@ -79,8 +77,7 @@ namespace Engine
             }
             if (Scene.GetInstance().graphics.PreferredBackBufferWidth != Size.X || Scene.GetInstance().graphics.PreferredBackBufferHeight != Size.Y)
             {
-                Scene.GetInstance().graphics.PreferredBackBufferWidth = (int)Size.X;
-                Scene.GetInstance().graphics.PreferredBackBufferHeight = (int)Size.Y;
+                Size = new Vector2(Scene.GetInstance().graphics.PreferredBackBufferWidth, Scene.GetInstance().graphics.PreferredBackBufferHeight);
                 Scene.GetInstance().graphics.ApplyChanges();
             }
 

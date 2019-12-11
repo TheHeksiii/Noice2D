@@ -12,7 +12,7 @@ namespace Engine
     public class ParticleSystemRenderer : Renderer
     {
         [XmlIgnore] public SpriteBatch spriteBatch;
-        [System.ComponentModel.Editor(typeof(Editor.TextureEditor), typeof(System.Drawing.Design.UITypeEditor))]
+        //[System.ComponentModel.Editor(typeof(Editor.TextureEditor), typeof(System.Drawing.Design.UITypeEditor))]
         [XmlIgnore] [ShowInEditor] public Texture2D circleTexture { get; set; }
         CircleF circle = new CircleF(new Vector2(0, 0), 10);
         public ParticleSystem particleSystem;
