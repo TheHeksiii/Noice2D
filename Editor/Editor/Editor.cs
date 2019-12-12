@@ -38,7 +38,6 @@ namespace Editor
 
         public Editor()
         {
-            //new MetroForm().Show();
             instance = this;
             InitializeComponent();
 
@@ -68,7 +67,7 @@ namespace Editor
         void PopulateCustomEditorsActions()
         {
 
-            CustomEditorsActions.BoolEditor_Paint += (e) =>
+            Engine.UITypeEditors.BoolEditor.BoolEditor_Paint += (e) =>
             {
                 var rect = e.Bounds;
                 rect.Inflate(1, 1);
@@ -77,7 +76,7 @@ namespace Editor
                 /*ControlPaint.DrawButton(e.Graphics, rect, ButtonState.Flat |
          (((bool)e.Value) ? ButtonState.Checked : ButtonState.Normal));*/
             };
-            CustomEditorsActions.ColorPickerEditor_EditValue += (context, provider, value) =>
+            Microsoft.Xna.Framework.UITypeEditors.ColorPickerEditor.ColorPickerEditor_EditValue += (context, provider, value) =>
             {
                 void SetColorInClass(object instance, Microsoft.Xna.Framework.Color color)
                 {
@@ -104,7 +103,7 @@ namespace Editor
 
                 }
             };
-            CustomEditorsActions.TextureEditor_EditValue += (context, provider, value) =>
+            Microsoft.Xna.Framework.UITypeEditors.TextureEditor.TextureEditor_EditValue += (context, provider, value) =>
             {
 
                 using (OpenFileDialog openFileDialog = new OpenFileDialog())
@@ -112,7 +111,7 @@ namespace Editor
                     DialogResult dialogResult = openFileDialog.ShowDialog();
                     if (dialogResult == DialogResult.OK)
                     {
-                        string assetsPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "AssetsInUse");
+                        string assetsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "AssetsInUse");
                         Directory.CreateDirectory(assetsPath);
 
                         string newFilePath = Path.Combine(assetsPath, openFileDialog.SafeFileName);
@@ -124,9 +123,8 @@ namespace Editor
                     }
                 }
             };
-            CustomEditorsActions.EffectEditor_EditValue += (context, provider, value) =>
+            Microsoft.Xna.Framework.UITypeEditors.EffectEditor.EffectEditor_EditValue += (context, provider, value) =>
             {
-
                 using (OpenFileDialog openFileDialog = new OpenFileDialog())
                 {
                     DialogResult dialogResult = openFileDialog.ShowDialog();
@@ -728,8 +726,35 @@ namespace Editor
             CheckBox_Physics.FlatAppearance.BorderColor = CheckBox_Physics.Checked ? Color.Aqua : Color.Tomato;
 
         }
+        private void DeleteUnusedCachedAssets()
+        {
+            string[] files = Directory.GetFiles("AssetsInUse");
+            for (int i = 0; i < scene.gameObjects.Count; i++)
+            {
+                Scripts.SpriteRenderer spriteRenderer;
+                if ((spriteRenderer = scene.gameObjects[i].GetComponent<Scripts.SpriteRenderer>()) != null)
+                {
+                    for (int j = 0; j < files.Length; j++)
+                    {
+                        if (files[j] == spriteRenderer.texturePath)
+                        {
+                            files[j] = "";
+                        }
+                    }
+                }
+            }
+            for (int i = 0; i < files.Length; i++)
+            {
+                if (files[i] != "")
+                {
+                    File.Delete(files[i]);
+
+                }
+            }
+        }
         private void EditorForm_FormClosing(object sender, FormClosingEventArgs e)
         {
+            DeleteUnusedCachedAssets();
             scene.Exit();
         }
 

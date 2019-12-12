@@ -10,9 +10,6 @@ namespace Engine
     public static class CustomEditorsActions
     {
         public static Action<System.Drawing.Design.PaintValueEventArgs> BoolEditor_Paint;
-        public static Action<ITypeDescriptorContext, IServiceProvider, object> ColorPickerEditor_EditValue;
-        public static Action<ITypeDescriptorContext, IServiceProvider, object> TextureEditor_EditValue;
-        public static Action<ITypeDescriptorContext, IServiceProvider, object> EffectEditor_EditValue;
         
     }
 }

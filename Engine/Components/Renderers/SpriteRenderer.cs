@@ -6,7 +6,6 @@ namespace Scripts
 {
     public class SpriteRenderer : Renderer
     {
-        [System.ComponentModel.Editor(typeof(TextureEditor), typeof(System.Drawing.Design.UITypeEditor))]
         [System.Xml.Serialization.XmlIgnore] [ShowInEditor] public Texture2D texture { get; set; }
         public string texturePath;
 
@@ -30,9 +29,16 @@ namespace Scripts
         public override void Draw(SpriteBatch batch)
         {
             if (GameObject == null || texture == null) { return; }
-            batch.Draw(texture: texture, position: transform.Position, color: this.Color, rotation: -transform.Rotation, scale: transform.Scale
-                , origin: new Microsoft.Xna.Framework.Vector2(transform.Anchor.X * texture.Width, transform.Anchor.Y * texture.Height));
 
+            batch.Draw(
+                texture: texture,
+                position: transform.Position, sourceRectangle: null,
+                color: this.Color,
+                rotation: -transform.Rotation,
+                origin: new Vector2(transform.Anchor.X * texture.Width, transform.Anchor.Y * texture.Height),
+                scale: transform.Scale.Abs(),
+                effects: RenderingHelpers.GetSpriteFlipEffects(transform),
+                layerDepth: 0);
             base.Draw(batch);
         }
 

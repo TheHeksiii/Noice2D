@@ -21,7 +21,6 @@ namespace Engine
         [ShowInEditor] public float radius { get; set; } = 200;
         [ShowInEditor] public float speed { get; set; } = 4;
         [ShowInEditor] public float StartSize { get; set; } = 10;
-        [System.ComponentModel.Editor(typeof(ColorPickerEditor), typeof(UITypeEditor))]
         [ShowInEditor] public Color StartColor { get; set; } = Color.White;
         private float StartVelocityVariation = 40;
         [ShowInEditor] public int MaxParticles { get; set; } = 400;

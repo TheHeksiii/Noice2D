@@ -119,6 +119,11 @@ public static class Extensions
         }
         return v;
     }
+    public static Vector2 Abs(this Vector2 vec)
+    {
+        Vector2 v = new Vector2(Math.Abs(vec.X), Math.Abs(vec.Y));
+        return v;
+    }
 
     public static System.Drawing.Color ToOtherColor(this Microsoft.Xna.Framework.Color color)
     {

@@ -13,3 +13,9 @@ https://stackoverflow.com/questions/23714353/docking-a-winform-inside-another-wi
 pri posuvani-dragovani-sa opacita da na 70%
 
 on compile pridat attribut
+
+BoxCollider premenovat na BoxShape atd
+
+have         [System.ComponentModel.Editor(typeof(OneAndOnlyUITypeEditor), typeof(System.Drawing.Design.UITypeEditor))]
+either have all ifs in Draw, Edit of UITypeEditor,
+or on compiling Scripts.dll, add the correct attrib to ShowInEditor properties`

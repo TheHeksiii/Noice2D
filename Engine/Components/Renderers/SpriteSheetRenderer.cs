@@ -53,15 +53,15 @@ namespace Scripts
         {
             if (GameObject == null || texture == null) { return; }
             batch.Draw(texture: texture,
-                destinationRectangle: new Rectangle((int)transform.Position.X - (int)(transform.Anchor.X * SpriteSize.X * transform.Scale.X), (int)transform.Position.Y - (int)(transform.Anchor.Y * SpriteSize.Y * transform.Scale.X), (int)(SpriteSize.X * transform.Scale.X), (int)(SpriteSize.Y * transform.Scale.Y)),
+                destinationRectangle: new Rectangle((int)transform.Position.X - (int)(transform.Anchor.X * SpriteSize.X * transform.Scale.Abs().X), (int)transform.Position.Y - (int)(transform.Anchor.Y * SpriteSize.Y * transform.Scale.Abs().X), (int)(SpriteSize.X * transform.Scale.Abs().X), (int)(SpriteSize.Y * transform.Scale.Abs().Y)),
                 sourceRectangle: new Rectangle((int)SpriteSize.X * (int)(CurrentSpriteIndex % SpritesCount.X), (int)SpriteSize.Y * (int)(CurrentSpriteIndex / (SpritesCount.X)), (int)SpriteSize.X, (int)SpriteSize.Y),
-                color: Color.White); ;
+                color: Color.White);// effects: RenderingHelpers.GetSpriteFlipEffects(transform), rotation: transform.Rotation
         }
-        public override void OnTextureLoaded(Texture2D _texture,string _path)
+        public override void OnTextureLoaded(Texture2D _texture, string _path)
         {
             SpriteSize = new Vector2(_texture.Width / SpritesCount.X, _texture.Height / SpritesCount.Y);
 
-            base.OnTextureLoaded(_texture,_path);
+            base.OnTextureLoaded(_texture, _path);
         }
     }
 }

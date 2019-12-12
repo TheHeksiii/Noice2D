@@ -1,11 +1,18 @@
 ﻿using Engine;
 using Microsoft.Xna.Framework;
 using System;
+using System.ComponentModel;
 
 namespace Scripts
 {
+
+    public class MyClass{
+        public bool Value { get; set; } = false;
+        }
     public class Transform : Component
     {
+        [ShowInEditor]public MyClass MyClass { get; set; }
+        [ShowInEditor]
         public override bool Enabled { get { return true; } }
 
         [ShowInEditor] public Vector2 Scale { get; set; } = Vector2.One;

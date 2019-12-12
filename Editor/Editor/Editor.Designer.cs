@@ -39,7 +39,6 @@
             this.Timer_WindowAlign = new System.Windows.Forms.Timer(this.components);
             this.Panel_Main = new System.Windows.Forms.Panel();
             this.btn_ClearConsole = new System.Windows.Forms.Button();
-            this.txt_Console = new System.Windows.Forms.TextBox();
             this.button1 = new System.Windows.Forms.Button();
             this.CheckBox_Physics = new System.Windows.Forms.CheckBox();
             this.Panel_GameObjects = new System.Windows.Forms.Panel();
@@ -71,6 +70,7 @@
             this.searchToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
             this.aboutToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.txt_Console = new System.Windows.Forms.TextBox();
             this.label_updateTime = new System.Windows.Forms.Label();
             this.label_renderTime = new System.Windows.Forms.Label();
             label_titleCPUTime = new System.Windows.Forms.Label();
@@ -202,20 +202,6 @@
             this.btn_ClearConsole.Text = "Clear";
             this.btn_ClearConsole.UseVisualStyleBackColor = true;
             this.btn_ClearConsole.Click += new System.EventHandler(this.btn_ClearConsole_Click);
-            // 
-            // txt_Console
-            // 
-            this.txt_Console.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            this.txt_Console.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.txt_Console.Cursor = System.Windows.Forms.Cursors.Arrow;
-            this.txt_Console.ForeColor = System.Drawing.Color.MintCream;
-            this.txt_Console.Location = new System.Drawing.Point(144, 524);
-            this.txt_Console.Multiline = true;
-            this.txt_Console.Name = "txt_Console";
-            this.txt_Console.ReadOnly = true;
-            this.txt_Console.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txt_Console.Size = new System.Drawing.Size(591, 163);
-            this.txt_Console.TabIndex = 11;
             // 
             // button1
             // 
@@ -493,6 +479,20 @@
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(122, 22);
             this.aboutToolStripMenuItem.Text = "&About...";
+            // 
+            // txt_Console
+            // 
+            this.txt_Console.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
+            this.txt_Console.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txt_Console.Cursor = System.Windows.Forms.Cursors.Arrow;
+            this.txt_Console.ForeColor = System.Drawing.Color.MintCream;
+            this.txt_Console.Location = new System.Drawing.Point(144, 524);
+            this.txt_Console.Multiline = true;
+            this.txt_Console.Name = "txt_Console";
+            this.txt_Console.ReadOnly = true;
+            this.txt_Console.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txt_Console.Size = new System.Drawing.Size(591, 163);
+            this.txt_Console.TabIndex = 11;
             // 
             // label_updateTime
             // 

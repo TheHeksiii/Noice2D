@@ -64,7 +64,7 @@ namespace Engine
             };
             graphics.ApplyChanges();
             //Window.IsBorderless = true;
-            Window.Position = new Point(50, 50);
+            Window.Position = new Point(-1920, 50);
 
             MouseInput.Mouse1Clicked += OnMouse1Clicked;
             MouseInput.Mouse1Released += OnMouse1Released;

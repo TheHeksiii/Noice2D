@@ -3,7 +3,9 @@ using Scripts;
 using System;
 using System.CodeDom;
 using System.CodeDom.Compiler;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
@@ -45,6 +47,30 @@ namespace Engine
 
             parameters.GenerateInMemory = true;
             parameters.GenerateExecutable = false;
+
+            //System.ComponentModel.TypeDescriptor.AddAttributes
+            /*var components = typeof(Component)
+                    .Assembly.GetTypes()
+                    .Where(t => t.IsSubclassOf(typeof(Component)) && !t.IsAbstract).ToList();
+            components.AddRange(ScriptsManager.ScriptsAssembly.GetTypes().Where(t => t.IsSubclassOf(typeof(Component))));
+            List<PropertyInfo> properties = new List<PropertyInfo>();
+            for (int i = 0; i < components.Count; i++)
+            {
+                properties.AddRange(components[i].GetProperties().Where(p => (p.GetCustomAttribute<ShowInEditor>() != null)).ToArray());
+            }
+            for(int i = 0; i < properties.Count; i++)
+            {
+                if (properties[i].PropertyType == typeof(bool))
+                {
+                    properties[i].att
+                }
+            }*/
+            System.ComponentModel.TypeDescriptor.AddAttributes(typeof(MyClass), new Attribute[] { new System.ComponentModel.EditorAttribute(typeof(Engine.UITypeEditors.BoolEditor), typeof(System.Drawing.Design.UITypeEditor)) });
+            //System.ComponentModel.TypeDescriptor.AddAttributes(typeof(Microsoft.Xna.Framework.Vector2), new Attribute[] { new System.ComponentModel.EditorAttribute(typeof(Engine.UITypeEditors.BoolEditor), typeof(System.Drawing.Design.UITypeEditor)) });
+            System.ComponentModel.TypeDescriptor.AddAttributes(typeof(Delegate), new Attribute[] { new System.ComponentModel.EditorAttribute(typeof(Engine.UITypeEditors.MethodEditor), typeof(System.Drawing.Design.UITypeEditor)) });
+
+
+
 
             CompilerResults results = provider.CompileAssemblyFromFile(parameters, files);
 

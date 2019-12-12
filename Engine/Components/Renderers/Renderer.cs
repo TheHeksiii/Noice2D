@@ -8,7 +8,6 @@ namespace Scripts
     {
         public virtual void Draw(SpriteBatch batch) { }
         
-        [System.ComponentModel.Editor(typeof(ColorPickerEditor), typeof(UITypeEditor))]
         [ShowInEditor] public Color Color { get; set; } = Color.White;
         [ShowInEditor] public bool Fill { get; set; } = false;
         //[System.ComponentModel.Editor(typeof(Editor.EffectEditor), typeof(UITypeEditor))]
