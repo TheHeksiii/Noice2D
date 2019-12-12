@@ -4,9 +4,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Scripts
 {
-    public class ImageRenderer : Renderer
+    public class SpriteRenderer : Renderer
     {
-        //[System.ComponentModel.Editor(typeof(Editor.TextureEditor), typeof(System.Drawing.Design.UITypeEditor))]
+        [System.ComponentModel.Editor(typeof(TextureEditor), typeof(System.Drawing.Design.UITypeEditor))]
         [System.Xml.Serialization.XmlIgnore] [ShowInEditor] public Texture2D texture { get; set; }
         public string texturePath;
 
@@ -18,13 +18,15 @@ namespace Scripts
             }
             base.Awake();
         }
-        public void LoadTexture(string texturePath)
+        public void LoadTexture(string _texturePath)
         {
-            System.IO.Stream stream = TitleContainer.OpenStream(texturePath);
+            System.IO.Stream stream = TitleContainer.OpenStream(_texturePath);
             texture = Texture2D.FromStream(Scene.GetInstance().GraphicsDevice, stream);
             stream.Close();
-            OnTextureLoaded(texture);
+            OnTextureLoaded(texture, _texturePath);
+
         }
+
         public override void Draw(SpriteBatch batch)
         {
             if (GameObject == null || texture == null) { return; }
@@ -33,5 +35,11 @@ namespace Scripts
 
             base.Draw(batch);
         }
+
+        public virtual void OnTextureLoaded(Texture2D _texture, string _path)
+        {
+            texturePath = _path;
+        }
+
     }
 }

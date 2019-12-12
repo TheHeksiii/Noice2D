@@ -7,12 +7,10 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.IO;
 using System.Reflection;
-using System.Windows.Forms;
-using ButtonState = System.Windows.Forms.ButtonState;
 using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
 
-namespace Editor
+namespace Engine
 {
     public class BoolEditor : UITypeEditor
     {
@@ -22,12 +20,7 @@ namespace Editor
         }
         public override void PaintValue(PaintValueEventArgs e)
         {
-            var rect = e.Bounds;
-            rect.Inflate(1, 1);
-            ControlPaint.DrawCheckBox(e.Graphics, rect, ButtonState.Flat |
-                (((bool)e.Value) ? ButtonState.Checked : ButtonState.Normal));
-            /*ControlPaint.DrawButton(e.Graphics, rect, ButtonState.Flat |
-     (((bool)e.Value) ? ButtonState.Checked : ButtonState.Normal));*/
+            CustomEditorsActions.BoolEditor_Paint(e);
         }
     }
     public class MethodEditor : UITypeEditor
@@ -81,16 +74,7 @@ namespace Editor
             return (Microsoft.Xna.Framework.Color)colorField?.GetValue(instance);
         }
 
-        private void SetColorInClass(object instance, Microsoft.Xna.Framework.Color color)
-        {
-            Type sourceType = instance.GetType();
-            PropertyInfo colorField = sourceType.GetProperty("color");
-            if (colorField == null)
-            {
-                colorField = sourceType.GetProperty("Color");
-            }
-            colorField?.SetValue(instance, color, null);
-        }
+
         public override void PaintValue(PaintValueEventArgs e)
         {
             var rect = e.Bounds;
@@ -108,18 +92,8 @@ namespace Editor
             {
                 return base.EditValue(context, provider, value);
             }
-            using (ColorPickerForm colorPickerForm = new ColorPickerForm())
-            {
-                colorPickerForm.StartPosition = FormStartPosition.Manual;
-                colorPickerForm.Location = new Point((int)(Cursor.Position.X - colorPickerForm.Width / 2), Cursor.Position.Y);
-                colorPickerForm.colorMap.OnColorChanged += delegate
-                {
-                    SetColorInClass(context.Instance, colorPickerForm.color);
-                    value = colorPickerForm.color;
-                };
-                colorPickerForm.ShowDialog();
+            CustomEditorsActions.ColorPickerEditor_EditValue(context,provider,value);
 
-            }
             return value;
         }
     }
@@ -139,22 +113,7 @@ namespace Editor
             {
                 return base.EditValue(context, provider, value);
             }
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                DialogResult dialogResult = openFileDialog.ShowDialog();
-                if (dialogResult == DialogResult.OK)
-                {
-                    string assetsPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "AssetsInUse");
-                    Directory.CreateDirectory(assetsPath);
-
-                    string newFilePath = Path.Combine(assetsPath, openFileDialog.SafeFileName);
-
-                    File.Copy(openFileDialog.FileName, newFilePath, overwrite: true);
-
-
-                    (context.Instance as Scripts.ImageRenderer).LoadTexture(Path.Combine("AssetsInUse", openFileDialog.SafeFileName));
-                }
-            }
+            CustomEditorsActions.TextureEditor_EditValue(context, provider, value);
             return value;
         }
     }
@@ -175,49 +134,11 @@ namespace Editor
             {
                 return base.EditValue(context, provider, value);
             }
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                DialogResult dialogResult = openFileDialog.ShowDialog();
-                if (dialogResult == DialogResult.OK)
-                {
-
-
-                    //(context.Instance as Scripts.Renderer).effect = EditorSceneView.GetInstance().Content.Load<Effect>(openFileDialog.FileName);
-                    value = Scene.GetInstance().Content.Load<Effect>(openFileDialog.FileName.Replace(".xnb", ""));
-                }
-            }
+            
+            CustomEditorsActions.EffectEditor_EditValue(context, provider, value);
             return value;
         }
     }
-    public class ModelEditor : UITypeEditor
-    {
-        public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
-        {
-            return UITypeEditorEditStyle.Modal;
-        }
-        public override bool GetPaintValueSupported(ITypeDescriptorContext context)
-        {
-            return true;
-        }
-        public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
-        {
-            if (context == null || context.Instance == null || provider == null)
-            {
-                return base.EditValue(context, provider, value);
-            }
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                DialogResult dialogResult = openFileDialog.ShowDialog();
-                if (dialogResult == DialogResult.OK)
-                {
-
-
-                    //(context.Instance as Scripts.Renderer).effect = EditorSceneView.GetInstance().Content.Load<Effect>(openFileDialog.FileName);
-                    value = Scene.GetInstance().Content.Load<Model>(openFileDialog.FileName);
-                }
-            }
-            return value;
-        }
-    }
+  
 }
 

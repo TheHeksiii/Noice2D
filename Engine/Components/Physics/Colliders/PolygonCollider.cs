@@ -9,7 +9,7 @@ namespace Scripts
     public class PolygonCollider : Collider
     {
         public delegate void PointsEditor();
-        //[System.ComponentModel.Editor(typeof(Editor.MethodEditor), typeof(UITypeEditor))]
+        [System.ComponentModel.Editor(typeof(MethodEditor), typeof(UITypeEditor))]
         [ShowInEditor]
         [System.Xml.Serialization.XmlIgnore]
         public PointsEditor OnPointsEdit { get; set; } = Engine.ColliderEditor.GetInstance().ToggleEditing;

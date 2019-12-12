@@ -18,7 +18,8 @@ namespace Engine
             instance = this;
             Zoom = 1f;
         }
-        //[System.ComponentModel.Editor(typeof(Editor.ColorPickerEditor), typeof(System.Drawing.Design.UITypeEditor))]
+
+        [System.ComponentModel.Editor(typeof(ColorPickerEditor), typeof(System.Drawing.Design.UITypeEditor))]
         [ShowInEditor] public Color Color { get; set; } = new Color(34, 34, 34);
 
 

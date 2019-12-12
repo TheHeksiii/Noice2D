@@ -128,7 +128,10 @@ namespace Engine
             /*GameObject a = new GameObject();
             a.AddComponent<ParticleSystem>();
             a.Awake();*/
-
+            if (Serializer.lastScene != "")
+            {
+                LoadScene(Serializer.lastScene);
+            }
             base.Initialize();
 
         }
@@ -220,6 +223,10 @@ namespace Engine
 
             gameObjects = new List<GameObject>();
             SceneFile sceneFile = Serializer.GetInstance().LoadGameObjects(path);
+            for (int i = 0; i < sceneFile.GameObjects.Count; i++)
+            {
+                sceneFile.GameObjects[i].Awake();
+            }
 
             Serializer.GetInstance().ConnectGameObjectsWithComponents(sceneFile);
             SceneLoad?.Invoke(this, null);

@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Scripts
 {
-    public class SpriteSheetRenderer : ImageRenderer
+    public class SpriteSheetRenderer : SpriteRenderer
     {
         private Vector2 spritesCount = new Vector2(1, 1);
 
@@ -57,11 +57,11 @@ namespace Scripts
                 sourceRectangle: new Rectangle((int)SpriteSize.X * (int)(CurrentSpriteIndex % SpritesCount.X), (int)SpriteSize.Y * (int)(CurrentSpriteIndex / (SpritesCount.X)), (int)SpriteSize.X, (int)SpriteSize.Y),
                 color: Color.White); ;
         }
-        public override void OnTextureLoaded(Texture2D _tex)
+        public override void OnTextureLoaded(Texture2D _texture,string _path)
         {
-            SpriteSize = new Vector2(_tex.Width / SpritesCount.X, _tex.Height / SpritesCount.Y);
+            SpriteSize = new Vector2(_texture.Width / SpritesCount.X, _texture.Height / SpritesCount.Y);
 
-            base.OnTextureLoaded(texture);
+            base.OnTextureLoaded(_texture,_path);
         }
     }
 }

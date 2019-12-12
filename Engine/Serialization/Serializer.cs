@@ -9,6 +9,7 @@ namespace Engine
 {
     public class Serializer
     {
+        public static string lastScene = "";
         public static Serializer instance;
         public static Serializer GetInstance()
         {
@@ -18,6 +19,8 @@ namespace Engine
         public Serializer()
         {
             instance = this;
+
+            lastScene = Properties.Settings.Default.lastScene.ToString();
         }
         void UpdateSerializableTypes()
         {
@@ -38,6 +41,11 @@ namespace Engine
         }
         public void SaveGameObjects(SceneFile sceneFile, string scenePath)
         {
+            lastScene = scenePath;
+
+            Properties.Settings.Default.lastScene = lastScene;
+            Properties.Settings.Default.Save();
+
             using (StreamWriter sw = new StreamWriter(scenePath))
             {
                 for (int i = 0; i < sceneFile.GameObjects.Count; i++)
@@ -71,7 +79,7 @@ namespace Engine
             {
                 UpdateSerializableTypes();
                 XmlSerializer xmlSerializer = new XmlSerializer(typeof(SceneFile),
-    SerializableTypes.ToArray());
+                    SerializableTypes.ToArray());
                 return ((SceneFile)xmlSerializer.Deserialize(sr));
             }
         }
@@ -109,7 +117,6 @@ namespace Engine
 
 
                 }
-                des[i].Awake();
             }
         }
     }

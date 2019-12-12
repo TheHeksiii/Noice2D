@@ -1,5 +1,6 @@
 ﻿using Engine;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -64,7 +65,81 @@ namespace Editor
 
             StartGame();
         }
+        void PopulateCustomEditorsActions()
+        {
 
+            CustomEditorsActions.BoolEditor_Paint += (e) =>
+            {
+                var rect = e.Bounds;
+                rect.Inflate(1, 1);
+                ControlPaint.DrawCheckBox(e.Graphics, rect, ButtonState.Flat |
+                    (((bool)e.Value) ? ButtonState.Checked : ButtonState.Normal));
+                /*ControlPaint.DrawButton(e.Graphics, rect, ButtonState.Flat |
+         (((bool)e.Value) ? ButtonState.Checked : ButtonState.Normal));*/
+            };
+            CustomEditorsActions.ColorPickerEditor_EditValue += (context, provider, value) =>
+            {
+                void SetColorInClass(object instance, Microsoft.Xna.Framework.Color color)
+                {
+                    Type sourceType = instance.GetType();
+                    PropertyInfo colorField = sourceType.GetProperty("color");
+                    if (colorField == null)
+                    {
+                        colorField = sourceType.GetProperty("Color");
+                    }
+                    colorField?.SetValue(instance, color, null);
+                };
+
+                using (ColorPickerForm colorPickerForm = new ColorPickerForm())
+                {
+                    colorPickerForm.StartPosition = FormStartPosition.Manual;
+
+                    colorPickerForm.Location = new System.Drawing.Point((int)(Cursor.Position.X - colorPickerForm.Width / 2), Cursor.Position.Y);
+                    colorPickerForm.colorMap.OnColorChanged += delegate
+                    {
+                        SetColorInClass(context.Instance, colorPickerForm.color);
+                        value = colorPickerForm.color;
+                    };
+                    colorPickerForm.ShowDialog();
+
+                }
+            };
+            CustomEditorsActions.TextureEditor_EditValue += (context, provider, value) =>
+            {
+
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                {
+                    DialogResult dialogResult = openFileDialog.ShowDialog();
+                    if (dialogResult == DialogResult.OK)
+                    {
+                        string assetsPath = Path.Combine(System.AppDomain.CurrentDomain.BaseDirectory, "AssetsInUse");
+                        Directory.CreateDirectory(assetsPath);
+
+                        string newFilePath = Path.Combine(assetsPath, openFileDialog.SafeFileName);
+
+                        File.Copy(openFileDialog.FileName, newFilePath, overwrite: true);
+
+
+                        (context.Instance as Scripts.SpriteRenderer).LoadTexture(Path.Combine("AssetsInUse", openFileDialog.SafeFileName));
+                    }
+                }
+            };
+            CustomEditorsActions.EffectEditor_EditValue += (context, provider, value) =>
+            {
+
+                using (OpenFileDialog openFileDialog = new OpenFileDialog())
+                {
+                    DialogResult dialogResult = openFileDialog.ShowDialog();
+                    if (dialogResult == DialogResult.OK)
+                    {
+
+
+                        //(context.Instance as Scripts.Renderer).effect = EditorSceneView.GetInstance().Content.Load<Effect>(openFileDialog.FileName);
+                        value = Scene.GetInstance().Content.Load<Effect>(openFileDialog.FileName.Replace(".xnb", ""));
+                    }
+                }
+            };
+        }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == (Keys.Delete) && GetSelectedGameObject() != null && Hierarchy.Focused)
@@ -171,13 +246,15 @@ namespace Editor
         {
             scene = new Scene();
             Control sceneForm = Form.FromHandle(scene.Window.Handle);
-
+            PopulateCustomEditorsActions();
             //scene.Window.Position = Screen.AllScreens[Screen.AllScreens.Length - 1].Bounds.Location.ToGamePoint();
             scene.GameObjectCreated += OnGameObjectCreated;
             scene.GameObjectDestroyed += OnGameObjectDestroyed;
             scene.SceneLoad += OnSceneLoad;
             //scene.SceneLoaded += FixReferences;
             scene.SceneUpdated += OnSceneUpdated;
+
+
             scene.Run();// this is end point, dont put anything after Run
 
 
@@ -190,6 +267,12 @@ namespace Editor
                 Hierarchy.Nodes.Clear();
                 Hierarchy.Invalidate();
             }));
+
+            // 
+            for (int i = 0; i < scene.gameObjects.Count; i++)
+            {
+                OnGameObjectCreated(this, scene.gameObjects[i]);
+            }
         }
 
         private void OnGameObjectDestroyed(object sender, GameObject e)

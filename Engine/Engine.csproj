@@ -67,7 +67,7 @@
     <Compile Include="Components\Particle System\ParticleSystem.cs" />
     <Compile Include="Components\Particle System\ParticleSystemRenderer.cs" />
     <Compile Include="Components\Particle System\Pool.cs" />
-    <Compile Include="Components\Renderers\ImageRenderer.cs" />
+    <Compile Include="Components\Renderers\SpriteRenderer.cs" />
     <Compile Include="Components\Renderers\ModelRenderer.cs" />
     <Compile Include="Components\Physics\Colliders\BoxCollider.cs" />
     <Compile Include="Components\Physics\Colliders\CircleCollider.cs" />
@@ -84,6 +84,8 @@
     <Compile Include="Components\Text.cs" />
     <Compile Include="Components\Transform.cs" />
     <Compile Include="Components\Editor\TransformHandle.cs" />
+    <Compile Include="CustomUI\CustomEditorsActions.cs" />
+    <Compile Include="CustomUI\UITypeEditors.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Extensions\PhysicsExtensions.cs" />
     <Compile Include="Extensions\Rendom.cs" />
