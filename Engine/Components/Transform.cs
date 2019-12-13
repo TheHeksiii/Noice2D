@@ -6,12 +6,9 @@ using System.ComponentModel;
 namespace Scripts
 {
 
-    public class MyClass{
-        public bool Value { get; set; } = false;
-        }
     public class Transform : Component
     {
-        [ShowInEditor]public MyClass MyClass { get; set; }
+        [ShowInEditor]public UInt16 xxxx { get; set; }
         [ShowInEditor]
         public override bool Enabled { get { return true; } }
 

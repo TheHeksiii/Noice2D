@@ -55,46 +55,46 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Editor\ColorPickerForm\ColorMap.cs">
+    <Compile Include="ColorPickerControl\ColorMap.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Editor\ColorPickerForm\ColorMap.Designer.cs">
+    <Compile Include="ColorPickerControl\ColorMap.Designer.cs">
       <DependentUpon>ColorMap.cs</DependentUpon>
     </Compile>
-    <Compile Include="Editor\ColorPickerForm\ColorMapHue.cs">
+    <Compile Include="ColorPickerControl\ColorMapHue.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Editor\ColorPickerForm\ColorMapHue.Designer.cs">
+    <Compile Include="ColorPickerControl\ColorMapHue.Designer.cs">
       <DependentUpon>ColorMapHue.cs</DependentUpon>
     </Compile>
-    <Compile Include="Editor\ColorPickerForm\ColorPickerForm.cs">
+    <Compile Include="ColorPickerControl\ColorPicker.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="ColorPickerControl\ColorPicker.Designer.cs">
+      <DependentUpon>ColorPicker.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ColorPickerControl\LockBitmap.cs" />
+    <Compile Include="Editor.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Editor\ColorPickerForm\ColorPickerForm.Designer.cs">
-      <DependentUpon>ColorPickerForm.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Editor\ColorPickerForm\LockBitmap.cs" />
-    <Compile Include="Editor\Editor.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Editor\Editor.Designer.cs">
+    <Compile Include="Editor.Designer.cs">
       <DependentUpon>Editor.cs</DependentUpon>
     </Compile>
-    <Compile Include="Editor\EditorConsole.cs" />
-    <Compile Include="Editor\EditorResources\EditorResources.cs" />
-    <Compile Include="Editor\EditorStyle.cs" />
-    <Compile Include="Editor\HierarchyTreeNode.cs" />
+    <Compile Include="EditorConsole.cs" />
+    <Compile Include="EditorResources\EditorResources.cs" />
+    <Compile Include="EditorStyle.cs" />
+    <Compile Include="HierarchyTreeNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="Editor\ColorPickerForm\ColorMap.resx">
+    <EmbeddedResource Include="ColorPickerControl\ColorMap.resx">
       <DependentUpon>ColorMap.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Editor\ColorPickerForm\ColorMapHue.resx">
+    <EmbeddedResource Include="ColorPickerControl\ColorMapHue.resx">
       <DependentUpon>ColorMapHue.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Editor\ColorPickerForm\ColorPickerForm.resx">
-      <DependentUpon>ColorPickerForm.cs</DependentUpon>
+    <EmbeddedResource Include="ColorPickerControl\ColorPicker.resx">
+      <DependentUpon>ColorPicker.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Editor\Editor.resx">
+    <EmbeddedResource Include="Editor.resx">
       <DependentUpon>Editor.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
@@ -131,7 +131,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Editor\CustomUI\" />
+    <Folder Include="CustomUI\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -1,6 +1,4 @@
 ﻿using Engine;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.ComponentModel;
 using System.Drawing;
@@ -8,6 +6,7 @@ using System.Drawing.Design;
 using System.IO;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Windows.Forms.Design;
 using Color = System.Drawing.Color;
 using Point = System.Drawing.Point;
 
@@ -61,44 +60,19 @@ namespace Engine.UITypeEditors
       public class ColorPickerEditor : UITypeEditor
       {
             public static Action<ITypeDescriptorContext, IServiceProvider, object> ColorPickerEditor_EditValue;
-            public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
-            {
-                  return UITypeEditorEditStyle.DropDown;
-            }
-            public override bool GetPaintValueSupported(ITypeDescriptorContext context)
-            {
-                  return true;
-            }
-            private Microsoft.Xna.Framework.Color GetColorFromClass(object instance)
-            {
-                  Type sourceType = instance.GetType();
-                  PropertyInfo colorField = sourceType.GetProperty("color");
-                  if (colorField == null)
-                  {
-                        colorField = sourceType.GetProperty("Color");
-                  }
-                  return (Microsoft.Xna.Framework.Color)colorField?.GetValue(instance);
-            }
 
 
-            public override void PaintValue(PaintValueEventArgs e)
-            {
-                  var rect = e.Bounds;
-                  rect.Inflate(1, 1);
 
-                  //Brush brush = new SolidBrush(GetColorFromClass(e.Context.Instance).ToOtherColor());
-                  //RectangleF rectF = new RectangleF(rect.Location, rect.Size);
-                  //e.Graphics.FillRectangle(brush, rectF);
-            }
             public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
             {
-                  if (context == null || context.Instance == null || provider == null)
-                  {
-                        return base.EditValue(context, provider, value);
-                  }
                   ColorPickerEditor_EditValue?.Invoke(context, provider, value);
 
                   return value;
+            }
+            public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
+            {
+                  return UITypeEditorEditStyle.DropDown;
+
             }
       }
       public class BoolEditor : UITypeEditor
@@ -106,27 +80,46 @@ namespace Engine.UITypeEditors
             public static Action<PaintValueEventArgs> BoolEditor_Paint;
             Pen pen = new Pen(Color.LightCoral);
 
-            public override bool GetPaintValueSupported(ITypeDescriptorContext context)
-            {
-                  return true;
-            }
-            public override void PaintValue(PaintValueEventArgs e)
-            {
+ 
 
-                  var rect = e.Bounds;
-
-                  //e.Graphics.DrawRectangle(pen, rect);
-                  ControlPaint.DrawRadioButton(e.Graphics, rect, ButtonState.Flat | ButtonState.Checked);
-            }
             public override object EditValue(ITypeDescriptorContext context, IServiceProvider provider, object value)
             {
+                  IWindowsFormsEditorService editorService = null;
+                  if (provider != null)
+                  {
+                        editorService = provider.GetService(typeof(IWindowsFormsEditorService)) as IWindowsFormsEditorService;
+                  }
 
-                  return value;
+                  if (editorService != null)
+                  {
+                        Panel panel = new Panel();
+
+                        NumericUpDown udControl1 = new NumericUpDown();
+                        udControl1.DecimalPlaces = 5;
+                        udControl1.TextAlign =HorizontalAlignment.Center;
+                        udControl1.Width = 150;
+                        udControl1.Dock = DockStyle.Left;
+
+                        NumericUpDown udControl2 = new NumericUpDown();
+                        udControl2.DecimalPlaces = 5;
+                        udControl2.TextAlign = HorizontalAlignment.Center;
+                        udControl2.Width = 150;
+                        udControl2.Dock = DockStyle.Left;
+
+                        panel.Size = new Size(300, udControl1.Height);
+
+                        panel.Controls.Add(udControl1);
+                        panel.Controls.Add(udControl2);
+
+
+                        editorService.DropDownControl(panel);
+                  }
+
                   return value;
             }
             public override UITypeEditorEditStyle GetEditStyle(ITypeDescriptorContext context)
             {
-                  return UITypeEditorEditStyle.None;
+                  return UITypeEditorEditStyle.DropDown;
 
             }
       }

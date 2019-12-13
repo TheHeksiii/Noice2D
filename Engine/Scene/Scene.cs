@@ -5,6 +5,7 @@ using Scripts;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 
 namespace Engine
 {
@@ -199,7 +200,7 @@ namespace Engine
             {
                 using (System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog())
                 {
-                    openFileDialog.InitialDirectory = System.IO.Directory.GetCurrentDirectory();
+                    openFileDialog.InitialDirectory = Path.Combine(System.IO.Directory.GetCurrentDirectory(),"Scenes");
 
                     System.Windows.Forms.DialogResult dialogResult = openFileDialog.ShowDialog();
                     if (dialogResult == System.Windows.Forms.DialogResult.OK)
