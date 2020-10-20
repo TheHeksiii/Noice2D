@@ -154,6 +154,7 @@ namespace Engine
 				sf.Components.AddRange(gameObjects[i].Components);
 			}
 			sf.GameObjects = gameObjects;
+			sf.gameObjectNextID = IDsManager.gameObjectNextID;
 			return sf;
 		}
 		public void FindNewDefaultObjects()
@@ -222,6 +223,7 @@ namespace Engine
 
 
 			Serializer.GetInstance().ConnectGameObjectsWithComponents(sceneFile);
+			IDsManager.gameObjectNextID = sceneFile.gameObjectNextID;
 
 			for (int i = 0; i < sceneFile.GameObjects.Count; i++)
 			{
@@ -361,6 +363,7 @@ namespace Engine
 
 		protected override void Draw(GameTime gameTime)
 		{
+			if (camera?.renderTarget == null) { return; }
 			renderStopwatch.Start();
 
 

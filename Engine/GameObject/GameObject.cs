@@ -105,7 +105,17 @@ namespace Engine
 
 			OnComponentAdded += LinkComponents;
 			OnComponentAdded += InvokeOnComponentAddedOnComponents;
+			OnComponentAdded += CheckForTransformComponent;
 		}
+
+		private void CheckForTransformComponent(GameObject gameObject, Component component)
+		{
+			if(component is Transform)
+			{
+				transform = component as Transform;
+			}
+		}
+
 		void InvokeOnComponentAddedOnComponents(GameObject go, Component comp)
 		{
 			for (int i = 0; i < Components.Count; i++)

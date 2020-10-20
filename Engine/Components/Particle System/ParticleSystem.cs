@@ -107,7 +107,7 @@ namespace Scripts
 				wiggle *= 0;
 			}
 
-			p.position = MouseInput.Position;//new Vector2(center.X + sineX + wiggle.X, center.Y + sineY + wiggle.Y);
+			p.position = MouseInput.Position-transform.Position;//new Vector2(center.X + sineX + wiggle.X, center.Y + sineY + wiggle.Y);
 
 			p.velocity = StartVelocity + new Vector2(rnd.Next((int)-StartVelocityVariation, (int)StartVelocityVariation), rnd.Next((int)-StartVelocityVariation, (int)StartVelocityVariation));
 			//p.velocity = (lastMousePos - MouseInput.Position).NormalizedCopy() * 80;

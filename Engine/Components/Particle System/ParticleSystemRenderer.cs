@@ -55,7 +55,7 @@ namespace Scripts
 				{
 					circle.Center = particleSystem.particles[i].position + transform.Position;
 
-					circle.Radius = particleSystem.particles[i].radius;
+					circle.Radius = particleSystem.particles[i].radius*transform.Scale.X;
 
 					spriteBatch.Draw(circleTexture, destinationRectangle: new Rectangle((int)circle.Center.X - (int)circle.Radius / 2, (int)circle.Center.Y - (int)circle.Radius / 2, (int)circle.Radius, (int)circle.Radius),
 							color: particleSystem.particles[i].color);

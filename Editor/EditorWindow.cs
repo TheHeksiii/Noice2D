@@ -60,6 +60,7 @@ namespace Editor
 			Hierarchy.AfterCheck += HierarchyItemChecked;
 
 			Engine.Debug.Console.OnMessageLogged += (obj) => { EditorConsole.Log(obj); };
+			Engine.Debug.Console.OnConsoleCleared += () => { EditorConsole.Clear(); };
 			//UpdateFileExplorer();
 			cpuCounter = new PerformanceCounter("Processor", "% Processor Time", "_Total");
 
@@ -303,6 +304,8 @@ namespace Editor
 
 		private void OnSceneLoad(object sender, EventArgs e)
 		{
+			addedIDs = new List<int>();
+			Engine.Debug.Console.Clear();
 			Hierarchy.Invoke((Action)(() =>
 			{
 				Hierarchy.Nodes.Clear();
@@ -420,11 +423,14 @@ namespace Editor
 				}
 			}
 		}
-
+		List<int> addedIDs = new List<int>();
 		public void OnGameObjectCreated(object sender, GameObject gameObject)
 		{
 			if (gameObject.parentID != -1) { return; }
 			if (gameObject.silent) { return; }
+			if (addedIDs.Contains(gameObject.ID)) { return; }
+			addedIDs.Add(gameObject.ID);
+
 			for (int i = 0; i < Hierarchy.Nodes.Count; i++)
 			{
 				if (Hierarchy.Nodes[i].Tag is GameObject)
@@ -436,6 +442,9 @@ namespace Editor
 			Engine.Debug.Console.Log("Added ID " + gameObject.ID);
 			BeginInvoke((Action)(() =>
 			{
+				Engine.Debug.Console.Log("Added ID 2nd wth" + gameObject.ID);
+
+				gameObject.OnComponentAdded -= OnComponentAdded;
 				gameObject.OnComponentAdded += OnComponentAdded;
 				HierarchyNode[] componentNodes = new HierarchyNode[gameObject.Components.Count];//we create node for every component
 
