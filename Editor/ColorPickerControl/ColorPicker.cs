@@ -14,27 +14,27 @@ namespace Editor
       public partial class ColorPicker : UserControl
       {
             private bool leftMouseClicked = false;
-            public ColorMap colorMap;
             public Color color;
 
             public TrackBar trackBar;
             public delegate void OnProgressChanged(float progress);
             public OnProgressChanged HueChanged;
-
+            public ColorMap ColorMap { get { return colorMap; } }
 
             public ColorPicker()
             {
                   InitializeComponent();
-                  colorMap = colorMap1;
-                  colorMap1.ColorPreview = colorPreview;
+
+                  colorMap.ColorPreview = colorPreview;
+                  //colorMap1.ColorPreview = colorPreview;
 
                   //colorMapTrackBar1.colorMapPictureBox = colorMap1.ColorPreview;
-                  HueChanged += colorMap1.SetHue;
-                  HueChanged += colorMap1.UpdateColorMap;
+                  HueChanged += colorMap.SetHue;
+                  HueChanged += colorMap.UpdateColorMap;
 
-                  colorMapHue1.MouseDown += colorMap1.EnableRedrawing;
-                  colorMapHue1.MouseUp += colorMap1.DisableRedrawing;
-                  colorMap1.OnColorChanged += UpdateColor;
+                  colorMapHue1.MouseDown += colorMap.EnableRedrawing;
+                  colorMapHue1.MouseUp += colorMap.DisableRedrawing;
+                  colorMap.OnColorChanged += UpdateColor;
             }
             void UpdateColor()
             {
@@ -42,7 +42,7 @@ namespace Editor
             }
             protected override void OnControlRemoved(ControlEventArgs e)
             {
-                  colorMap1.running = false;
+                  colorMap.running = false;
 
                   base.OnControlRemoved(e);
             }

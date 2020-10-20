@@ -6,7 +6,7 @@ using System.Drawing.Design;
 
 namespace Scripts
 {
-      public class PolygonCollider : Collider
+      public class PolygonShape : Shape
       {
             [ShowInEditor]
             [System.Xml.Serialization.XmlIgnore]

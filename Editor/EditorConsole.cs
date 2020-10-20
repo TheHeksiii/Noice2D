@@ -10,7 +10,7 @@ namespace Editor
         public static TextBox TextBox { private get; set; }
         public static void Log(object message)
         {
-            if (Editor.GetInstance().IsHandleCreated == false)
+            if (EditorWindow.GetInstance().IsHandleCreated == false)
             {
                 preparedMessages.Add(message.ToString());
             }

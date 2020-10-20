@@ -16,14 +16,14 @@
 //        public void LoadModel(string path)
 //        {
 //            modelPath = path;
-//            model = Scene.GetInstance().Content.Load<Model>(path);
+//            model = Scene.Instance.Content.Load<Model>(path);
 
 //        }
 //        public override void Awake()
 //        {
 //            if (texture == null && texturePath != null)
 //            {
-//                var scene = Scene.GetInstance();
+//                var scene = Scene.Instance;
 //                System.IO.Stream stream = TitleContainer.OpenStream(texturePath);
 //                texture = Texture2D.FromStream(scene.GraphicsDevice, stream);
 //                stream.Close();
@@ -70,7 +70,7 @@
 //                    // We want the aspect ratio of our display to match
 //                    // the entire screen's aspect ratio:
 //                    float aspectRatio =
-//                        Scene.GetInstance().graphics.PreferredBackBufferWidth / (float)Scene.GetInstance().graphics.PreferredBackBufferHeight;
+//                        Scene.Instance.graphics.PreferredBackBufferWidth / (float)Scene.Instance.graphics.PreferredBackBufferHeight;
 //                    // Field of view measures how wide of a view our camera has.
 //                    // Increasing this value means it has a wider view, making everything
 //                    // on screen smaller. This is conceptually the same as "zooming out".

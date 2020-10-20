@@ -14,8 +14,8 @@ namespace Launcher
             Application.SetCompatibleTextRenderingDefault(false);
             bool runEditor = true;
             if (runEditor)
-            {
-                Application.Run(new Editor.Editor());
+			{ 
+				Application.Run(new Editor.EditorWindow());
             }
             else
             {

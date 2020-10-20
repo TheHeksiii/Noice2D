@@ -8,12 +8,12 @@ namespace Scripts
     public class PolygonRenderer : Renderer
     {
         //[LinkableComponent]
-        public PolygonCollider polygonCollider;
+        public PolygonShape polygonCollider;
         public bool editingPoints = false;
 
         public override void Awake()
         {
-            polygonCollider = GetComponent<PolygonCollider>();
+            polygonCollider = GetComponent<PolygonShape>();
             base.Awake();
         }
         public override void Draw(SpriteBatch batch)

@@ -41,6 +41,8 @@
     <DocumentationFile>
     </DocumentationFile>
     <GenerateSerializationAssemblies>On</GenerateSerializationAssemblies>
+    <DebugType>full</DebugType>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <PlatformTarget>x64</PlatformTarget>
@@ -59,7 +61,11 @@
     <OutputPath>bin\x86\Release\</OutputPath>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="./Scripts/abcd.cs" />
+    <Compile Include="./Scripts/fff.cs" />
+    <Compile Include="./Scripts/kkk.cs" />
     <Compile Include="Attributes\LinkableComponent.cs" />
+    <Compile Include="Attributes\ShowInEditor.cs" />
     <Compile Include="Components\Camera.cs" />
     <Compile Include="Components\Button.cs" />
     <Compile Include="Components\Component.cs" />
@@ -69,16 +75,16 @@
     <Compile Include="Components\Particle System\Pool.cs" />
     <Compile Include="Components\Renderers\SpriteRenderer.cs" />
     <Compile Include="Components\Renderers\ModelRenderer.cs" />
-    <Compile Include="Components\Physics\Colliders\BoxCollider.cs" />
-    <Compile Include="Components\Physics\Colliders\CircleCollider.cs" />
-    <Compile Include="Components\Physics\Colliders\Collider.cs" />
-    <Compile Include="Components\Physics\Colliders\LineCollider.cs" />
+    <Compile Include="Components\Physics\Colliders\BoxShape.cs" />
+    <Compile Include="Components\Physics\Colliders\CircleShape.cs" />
+    <Compile Include="Components\Physics\Colliders\Shape.cs" />
+    <Compile Include="Components\Physics\Colliders\LineShape.cs" />
     <Compile Include="Components\Physics\Rigidbody.cs" />
     <Compile Include="Components\Renderers\BoxRenderer.cs" />
     <Compile Include="Components\Renderers\LineRenderer.cs" />
     <Compile Include="Components\Renderers\PolygonRenderer.cs" />
     <Compile Include="Components\Renderers\Renderer.cs" />
-    <Compile Include="Components\Renderers\ShapeRenderer.cs" />
+    <Compile Include="Components\Renderers\CircleRenderer.cs" />
     <Compile Include="Components\Renderers\SpriteSheetRenderer.cs" />
     <Compile Include="Components\Renderers\TextRenderer.cs" />
     <Compile Include="Components\Text.cs" />
@@ -86,18 +92,17 @@
     <Compile Include="Components\Editor\TransformHandle.cs" />
     <Compile Include="CustomUI\CustomEditorsActions.cs" />
     <Compile Include="CustomUI\UITypeEditors.cs" />
+    <Compile Include="Debug\Console.cs" />
     <Compile Include="Extensions\Extensions.cs" />
     <Compile Include="Extensions\PhysicsExtensions.cs" />
     <Compile Include="Extensions\Rendom.cs" />
     <Compile Include="GameObject\GameObject.cs" />
     <Compile Include="GameObject\Pool.cs" />
-    <Compile Include="GameObject\SilentGameObject.cs" />
     <Compile Include="Input\MouseInput.cs" />
-    <Compile Include="Interfaces\IColorable.cs" />
     <Compile Include="Interfaces\IDestroyable.cs" />
     <Compile Include="Physics\ColliderEditor.cs" />
     <Compile Include="Physics\Physics.cs" />
-    <Compile Include="Components\Physics\Colliders\PolygonCollider.cs" />
+    <Compile Include="Components\Physics\Colliders\PolygonShape.cs" />
     <Compile Include="Physics\Time.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -114,12 +119,13 @@
     <Compile Include="Scene\Global.cs" />
     <Compile Include="Scene\Scene.cs" />
     <Compile Include="Scene\GameSceneView.cs" />
-    <Compile Include="Attributes\ShowInEditor.cs" />
     <Compile Include="Scene\IDsManager.cs" />
     <Compile Include="Scene\SceneData.cs" />
     <Compile Include="Scripting\ScriptsManager.cs" />
     <Compile Include="Serialization\SceneFile.cs" />
     <Compile Include="Serialization\Serializer.cs" />
+    <Compile Include="./Scripts/opppp.cs" />
+    <Compile Include="UI\ButtonTween.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MathNet.Numerics, Version=4.9.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -155,15 +161,41 @@
     <Reference Include="MonoGame.Extended, Version=3.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MonoGame.Extended.3.7.0\lib\netstandard2.0\MonoGame.Extended.dll</HintPath>
     </Reference>
-    <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Program Files (x86)\MonoGame\v3.0\Assemblies\Windows\MonoGame.Framework.dll</HintPath>
+    <Reference Include="MonoGame.Framework, Version=3.8.0.1641, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MonoGame.Framework.WindowsDX.3.8.0.1641\lib\net452\MonoGame.Framework.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="SharpDX, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.4.0.1\lib\net45\SharpDX.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct2D1, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct2D1.4.0.1\lib\net45\SharpDX.Direct2D1.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D11, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct3D11.4.0.1\lib\net45\SharpDX.Direct3D11.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Direct3D9, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Direct3D9.4.0.1\lib\net45\SharpDX.Direct3D9.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.DXGI, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.DXGI.4.0.1\lib\net45\SharpDX.DXGI.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.Mathematics, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.Mathematics.4.0.1\lib\net45\SharpDX.Mathematics.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.MediaFoundation, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.MediaFoundation.4.0.1\lib\net45\SharpDX.MediaFoundation.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.XAudio2, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.XAudio2.4.0.1\lib\net45\SharpDX.XAudio2.dll</HintPath>
+    </Reference>
+    <Reference Include="SharpDX.XInput, Version=4.0.1.0, Culture=neutral, PublicKeyToken=b4dcf0f35e5521f1, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpDX.XInput.4.0.1\lib\net45\SharpDX.XInput.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.AppContext, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.AppContext.4.3.0\lib\net463\System.AppContext.dll</HintPath>
@@ -411,7 +443,9 @@
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.2.0.1\build\net46\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props'))" />
     <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.8\build\Microsoft.CodeAnalysis.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.Analyzers.2.9.8\build\Microsoft.CodeAnalysis.Analyzers.props'))" />
+    <Error Condition="!Exists('..\packages\MonoGame.Framework.WindowsDX.3.8.0.1641\build\MonoGame.Framework.WindowsDX.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MonoGame.Framework.WindowsDX.3.8.0.1641\build\MonoGame.Framework.WindowsDX.targets'))" />
   </Target>
+  <Import Project="..\packages\MonoGame.Framework.WindowsDX.3.8.0.1641\build\MonoGame.Framework.WindowsDX.targets" Condition="Exists('..\packages\MonoGame.Framework.WindowsDX.3.8.0.1641\build\MonoGame.Framework.WindowsDX.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

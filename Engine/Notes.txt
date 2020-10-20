@@ -19,3 +19,5 @@ BoxCollider premenovat na BoxShape atd
 have         [System.ComponentModel.Editor(typeof(OneAndOnlyUITypeEditor), typeof(System.Drawing.Design.UITypeEditor))]
 either have all ifs in Draw, Edit of UITypeEditor,
 or on compiling Scripts.dll, add the correct attrib to ShowInEditor properties`
+
+stretching https://stackoverflow.com/questions/18497211/how-to-renter-to-texture-in-monogame

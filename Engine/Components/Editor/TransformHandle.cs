@@ -18,9 +18,10 @@ namespace Engine
         public bool clicked = false;
 
         public bool objectSelected = false;
-        public BoxCollider boxColliderXY;
-        public BoxCollider boxColliderX;
-        public BoxCollider boxColliderY;
+        public Transform selectedTransform;
+        public BoxShape boxColliderXY;
+        public BoxShape boxColliderX;
+        public BoxShape boxColliderY;
         public BoxRenderer boxRendererXY;
         public BoxRenderer boxRendererX;
         public BoxRenderer boxRendererY;
@@ -40,9 +41,9 @@ namespace Engine
 
             if (GetComponents<BoxRenderer>().Count > 2)
             {
-                boxColliderXY = GetComponent<BoxCollider>(0);
-                boxColliderX = GetComponent<BoxCollider>(1);
-                boxColliderY = GetComponent<BoxCollider>(2);
+                boxColliderXY = GetComponent<BoxShape>(0);
+                boxColliderX = GetComponent<BoxShape>(1);
+                boxColliderY = GetComponent<BoxShape>(2);
 
                 boxRendererXY = GetComponent<BoxRenderer>(0);
                 boxRendererX = GetComponent<BoxRenderer>(1);
@@ -50,13 +51,13 @@ namespace Engine
             }
             else
             {
-                boxColliderXY = GameObject.AddComponent<BoxCollider>();
-                boxColliderXY.rect = new Rectangle(0, 0, 20, 20);
+                boxColliderXY = GameObject.AddComponent<BoxShape>();
+                boxColliderXY.rect = new Rectangle(0,0, 20, 20);
 
-                boxColliderX = GameObject.AddComponent<BoxCollider>();
+                boxColliderX = GameObject.AddComponent<BoxShape>();
                 boxColliderX.rect = new Rectangle(0, 0, 50, 5);
 
-                boxColliderY = GameObject.AddComponent<BoxCollider>();
+                boxColliderY = GameObject.AddComponent<BoxShape>();
                 boxColliderY.rect = new Rectangle(0, 0, 5, 50);
 
                 boxRendererXY = GameObject.AddComponent<BoxRenderer>();
@@ -77,13 +78,16 @@ namespace Engine
         {
             if (Mouse.GetState().LeftButton == ButtonState.Pressed)
             {
-
                 if (GameObject.Active)
                 {
                     if (clicked)
                     {
                         Move(MouseInput.Delta);
                     }
+					else
+					{
+						transform.Position = selectedTransform.Position;
+					}
                 }
 
             }
@@ -141,6 +145,7 @@ namespace Engine
                     break;
             }
             transform.Position += moveVector;// we will grab it with offset, soe we want to move it only by change of mouse position
+            selectedTransform.Position = transform.Position;
         }
     }
 }

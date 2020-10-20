@@ -5,13 +5,18 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Scripts
 {
     public class SpriteRenderer : Renderer
-    {
-        [System.Xml.Serialization.XmlIgnore] [ShowInEditor] public Texture2D texture { get; set; }
+	{
+		[System.Xml.Serialization.XmlIgnore] [ShowInEditor] public Texture2D texture { get; set; }
+
         public string texturePath;
 
-        public override void Awake()
+
+		[LinkableComponent]
+		public BoxShape boxShape;
+
+		public override void Awake()
         {
-            if (texture == null && texturePath != null)
+            if (texturePath != null)
             {
                 LoadTexture(texturePath);
             }
@@ -20,10 +25,9 @@ namespace Scripts
         public void LoadTexture(string _texturePath)
         {
             System.IO.Stream stream = TitleContainer.OpenStream(_texturePath);
-            texture = Texture2D.FromStream(Scene.GetInstance().GraphicsDevice, stream);
+            texture = Texture2D.FromStream(Scene.Instance.GraphicsDevice, stream);
             stream.Close();
             OnTextureLoaded(texture, _texturePath);
-
         }
 
         public override void Draw(SpriteBatch batch)
@@ -45,6 +49,11 @@ namespace Scripts
         public virtual void OnTextureLoaded(Texture2D _texture, string _path)
         {
             texturePath = _path;
+
+			if (boxShape?.AutomaticSize==true)
+			{
+				boxShape.Size = new Vector2(_texture.Width, _texture.Height);
+			}
         }
 
     }

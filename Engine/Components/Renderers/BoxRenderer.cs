@@ -1,29 +1,35 @@
 ﻿using Engine;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGame.Extended;
 namespace Scripts
 {
-    public class BoxRenderer : Renderer
-    {
-        public float StrokeSize { get; set; } = 1;
-        [LinkableComponent]
-        public BoxCollider boxCollider;
+	public class BoxRenderer : Renderer
+	{
+		public float StrokeSize { get; set; } = 1;
+		[LinkableComponent]
+		public BoxShape boxCollider;
 
-        public override void Draw(SpriteBatch batch)
-        {
-            if (GameObject == null || boxCollider == null) { return; }
-            boxCollider.rect.Position = transform.Position;
-            if (Fill)
-            {
-                batch.FillRectangle(boxCollider.rect, Color);
-            }
-            else
-            {
-                batch.DrawRectangle(boxCollider.rect, Color, StrokeSize);
-            }
+		[ShowInEditor] public bool Fill { get; set; } = false;
 
-            base.Draw(batch);
-        }
+		public override void Draw(SpriteBatch batch)
+		{
+			if (GameObject == null || boxCollider == null) { return; }
+			RectangleF drawRect = new RectangleF(boxCollider.rect.Position,boxCollider.rect.Size);
+			
+			drawRect.Size *= transform.Scale;
+			drawRect.Offset(-boxCollider.rect.Size.Width * transform.Anchor.X, -boxCollider.rect.Size.Height * transform.Anchor.Y);
 
-    }
+			if (Fill)
+			{
+				batch.FillRectangle(drawRect, Color);
+			}
+			else
+			{
+				batch.DrawRectangle(drawRect, Color, StrokeSize);
+			}
+			base.Draw(batch);
+		}
+
+	}
 }

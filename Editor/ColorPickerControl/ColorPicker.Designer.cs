@@ -47,11 +47,10 @@
                   this.pictureBox13 = new System.Windows.Forms.PictureBox();
                   this.pictureBox14 = new System.Windows.Forms.PictureBox();
                   this.pictureBox15 = new System.Windows.Forms.PictureBox();
-                  this.colorMapHue1 = new ColorMapHue();
+                  this.colorMapHue1 = new Editor.ColorMapHue();
                   this.pictureBox16 = new System.Windows.Forms.PictureBox();
-                  this.colorMap1 = new ColorMap();
+                  this.colorMap = new Editor.ColorMap();
                   this.pictureBox17 = new System.Windows.Forms.PictureBox();
-                  this.colorPreview = new System.Windows.Forms.PictureBox();
                   this.pictureBox18 = new System.Windows.Forms.PictureBox();
                   this.pictureBox19 = new System.Windows.Forms.PictureBox();
                   this.pictureBox20 = new System.Windows.Forms.PictureBox();
@@ -74,6 +73,7 @@
                   this.button1 = new System.Windows.Forms.Button();
                   this.button2 = new System.Windows.Forms.Button();
                   this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+                  this.colorPreview = new System.Windows.Forms.PictureBox();
                   this.colorDialog1 = new System.Windows.Forms.ColorDialog();
                   ((System.ComponentModel.ISupportInitialize)(this.pictureBox37)).BeginInit();
                   ((System.ComponentModel.ISupportInitialize)(this.pictureBox38)).BeginInit();
@@ -95,9 +95,8 @@
                   ((System.ComponentModel.ISupportInitialize)(this.pictureBox15)).BeginInit();
                   ((System.ComponentModel.ISupportInitialize)(this.colorMapHue1)).BeginInit();
                   ((System.ComponentModel.ISupportInitialize)(this.pictureBox16)).BeginInit();
-                  ((System.ComponentModel.ISupportInitialize)(this.colorMap1)).BeginInit();
+                  ((System.ComponentModel.ISupportInitialize)(this.colorMap)).BeginInit();
                   ((System.ComponentModel.ISupportInitialize)(this.pictureBox17)).BeginInit();
-                  ((System.ComponentModel.ISupportInitialize)(this.colorPreview)).BeginInit();
                   ((System.ComponentModel.ISupportInitialize)(this.pictureBox18)).BeginInit();
                   ((System.ComponentModel.ISupportInitialize)(this.pictureBox19)).BeginInit();
                   ((System.ComponentModel.ISupportInitialize)(this.pictureBox20)).BeginInit();
@@ -118,6 +117,7 @@
                   ((System.ComponentModel.ISupportInitialize)(this.pictureBox35)).BeginInit();
                   ((System.ComponentModel.ISupportInitialize)(this.pictureBox36)).BeginInit();
                   this.flowLayoutPanel1.SuspendLayout();
+                  ((System.ComponentModel.ISupportInitialize)(this.colorPreview)).BeginInit();
                   this.SuspendLayout();
                   // 
                   // pictureBox37
@@ -321,7 +321,7 @@
                   // colorMapHue1
                   // 
                   this.colorMapHue1.Image = ((System.Drawing.Image)(resources.GetObject("colorMapHue1.Image")));
-                  this.colorMapHue1.Location = new System.Drawing.Point(0, 192);
+                  this.colorMapHue1.Location = new System.Drawing.Point(0, 145);
                   this.colorMapHue1.Name = "colorMapHue1";
                   this.colorMapHue1.Size = new System.Drawing.Size(296, 54);
                   this.colorMapHue1.TabIndex = 10;
@@ -341,15 +341,17 @@
                   this.pictureBox16.TabIndex = 15;
                   this.pictureBox16.TabStop = false;
                   // 
-                  // colorMap1
+                  // colorMap
                   // 
-                  this.colorMap1.BackColor = System.Drawing.SystemColors.AppWorkspace;
-                  this.colorMap1.Dock = System.Windows.Forms.DockStyle.Top;
-                  this.colorMap1.Location = new System.Drawing.Point(0, 50);
-                  this.colorMap1.Name = "colorMap1";
-                  this.colorMap1.Size = new System.Drawing.Size(300, 136);
-                  this.colorMap1.TabIndex = 9;
-                  this.colorMap1.TabStop = false;
+                  this.colorMap.BackColor = System.Drawing.SystemColors.ButtonHighlight;
+                  this.colorMap.Dock = System.Windows.Forms.DockStyle.Top;
+                  this.colorMap.Location = new System.Drawing.Point(0, 0);
+                  this.colorMap.MaximumSize = new System.Drawing.Size(300, 139);
+                  this.colorMap.MinimumSize = new System.Drawing.Size(300, 139);
+                  this.colorMap.Name = "colorMap";
+                  this.colorMap.Size = new System.Drawing.Size(300, 139);
+                  this.colorMap.TabIndex = 9;
+                  this.colorMap.TabStop = false;
                   // 
                   // pictureBox17
                   // 
@@ -361,16 +363,6 @@
                   this.pictureBox17.Size = new System.Drawing.Size(20, 20);
                   this.pictureBox17.TabIndex = 16;
                   this.pictureBox17.TabStop = false;
-                  // 
-                  // colorPreview
-                  // 
-                  this.colorPreview.BackColor = System.Drawing.SystemColors.AppWorkspace;
-                  this.colorPreview.Dock = System.Windows.Forms.DockStyle.Top;
-                  this.colorPreview.Location = new System.Drawing.Point(0, 0);
-                  this.colorPreview.Name = "colorPreview";
-                  this.colorPreview.Size = new System.Drawing.Size(300, 50);
-                  this.colorPreview.TabIndex = 8;
-                  this.colorPreview.TabStop = false;
                   // 
                   // pictureBox18
                   // 
@@ -603,7 +595,7 @@
                   // 
                   // flowLayoutPanel1
                   // 
-                  this.flowLayoutPanel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(192)))), ((int)(((byte)(192)))));
+                  this.flowLayoutPanel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
                   this.flowLayoutPanel1.Controls.Add(this.pictureBox37);
                   this.flowLayoutPanel1.Controls.Add(this.pictureBox38);
                   this.flowLayoutPanel1.Controls.Add(this.pictureBox39);
@@ -645,11 +637,21 @@
                   this.flowLayoutPanel1.Controls.Add(this.pictureBox36);
                   this.flowLayoutPanel1.Controls.Add(this.button1);
                   this.flowLayoutPanel1.Controls.Add(this.button2);
+                  this.flowLayoutPanel1.Controls.Add(this.colorPreview);
                   this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
                   this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 308);
                   this.flowLayoutPanel1.Name = "flowLayoutPanel1";
                   this.flowLayoutPanel1.Size = new System.Drawing.Size(300, 92);
                   this.flowLayoutPanel1.TabIndex = 11;
+                  // 
+                  // colorPreview
+                  // 
+                  this.colorPreview.BackColor = System.Drawing.Color.Black;
+                  this.colorPreview.Location = new System.Drawing.Point(157, 69);
+                  this.colorPreview.Name = "colorPreview";
+                  this.colorPreview.Size = new System.Drawing.Size(139, 20);
+                  this.colorPreview.TabIndex = 13;
+                  this.colorPreview.TabStop = false;
                   // 
                   // colorDialog1
                   // 
@@ -660,8 +662,7 @@
                   this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
                   this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
                   this.Controls.Add(this.colorMapHue1);
-                  this.Controls.Add(this.colorMap1);
-                  this.Controls.Add(this.colorPreview);
+                  this.Controls.Add(this.colorMap);
                   this.Controls.Add(this.flowLayoutPanel1);
                   this.Name = "ColorPicker";
                   this.Size = new System.Drawing.Size(300, 400);
@@ -685,9 +686,8 @@
                   ((System.ComponentModel.ISupportInitialize)(this.pictureBox15)).EndInit();
                   ((System.ComponentModel.ISupportInitialize)(this.colorMapHue1)).EndInit();
                   ((System.ComponentModel.ISupportInitialize)(this.pictureBox16)).EndInit();
-                  ((System.ComponentModel.ISupportInitialize)(this.colorMap1)).EndInit();
+                  ((System.ComponentModel.ISupportInitialize)(this.colorMap)).EndInit();
                   ((System.ComponentModel.ISupportInitialize)(this.pictureBox17)).EndInit();
-                  ((System.ComponentModel.ISupportInitialize)(this.colorPreview)).EndInit();
                   ((System.ComponentModel.ISupportInitialize)(this.pictureBox18)).EndInit();
                   ((System.ComponentModel.ISupportInitialize)(this.pictureBox19)).EndInit();
                   ((System.ComponentModel.ISupportInitialize)(this.pictureBox20)).EndInit();
@@ -708,57 +708,58 @@
                   ((System.ComponentModel.ISupportInitialize)(this.pictureBox35)).EndInit();
                   ((System.ComponentModel.ISupportInitialize)(this.pictureBox36)).EndInit();
                   this.flowLayoutPanel1.ResumeLayout(false);
+                  ((System.ComponentModel.ISupportInitialize)(this.colorPreview)).EndInit();
                   this.ResumeLayout(false);
 
             }
 
-        #endregion
+            #endregion
 
-        private System.Windows.Forms.PictureBox pictureBox37;
-        private System.Windows.Forms.PictureBox pictureBox38;
-        private System.Windows.Forms.PictureBox pictureBox39;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.PictureBox pictureBox2;
-        private System.Windows.Forms.PictureBox pictureBox3;
-        private System.Windows.Forms.PictureBox pictureBox4;
-        private System.Windows.Forms.PictureBox pictureBox5;
-        private System.Windows.Forms.PictureBox pictureBox6;
-        private System.Windows.Forms.PictureBox pictureBox7;
-        private System.Windows.Forms.PictureBox pictureBox8;
-        private System.Windows.Forms.PictureBox pictureBox9;
-        private System.Windows.Forms.PictureBox pictureBox10;
-        private System.Windows.Forms.PictureBox pictureBox11;
-        private System.Windows.Forms.PictureBox pictureBox12;
-        private System.Windows.Forms.PictureBox pictureBox13;
-        private System.Windows.Forms.PictureBox pictureBox14;
-        private System.Windows.Forms.PictureBox pictureBox15;
-        private System.Windows.Forms.PictureBox pictureBox16;
-        private System.Windows.Forms.PictureBox pictureBox17;
-        public System.Windows.Forms.PictureBox colorPreview;
-        private System.Windows.Forms.PictureBox pictureBox18;
-        private System.Windows.Forms.PictureBox pictureBox19;
-        private System.Windows.Forms.PictureBox pictureBox20;
-        private System.Windows.Forms.PictureBox pictureBox21;
-        private System.Windows.Forms.PictureBox pictureBox22;
-        private System.Windows.Forms.PictureBox pictureBox23;
-        private System.Windows.Forms.PictureBox pictureBox24;
-        private System.Windows.Forms.PictureBox pictureBox25;
-        private System.Windows.Forms.PictureBox pictureBox26;
-        private System.Windows.Forms.PictureBox pictureBox27;
-        private System.Windows.Forms.PictureBox pictureBox28;
-        private System.Windows.Forms.PictureBox pictureBox29;
-        private System.Windows.Forms.PictureBox pictureBox30;
-        private System.Windows.Forms.PictureBox pictureBox31;
-        private System.Windows.Forms.PictureBox pictureBox32;
-        private System.Windows.Forms.PictureBox pictureBox33;
-        private System.Windows.Forms.PictureBox pictureBox34;
-        private System.Windows.Forms.PictureBox pictureBox35;
-        private System.Windows.Forms.PictureBox pictureBox36;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
-        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
-        private System.Windows.Forms.ColorDialog colorDialog1;
-        private ColorMapHue colorMapHue1;
-        private ColorMap colorMap1;
-    }
+            private System.Windows.Forms.PictureBox pictureBox37;
+            private System.Windows.Forms.PictureBox pictureBox38;
+            private System.Windows.Forms.PictureBox pictureBox39;
+            private System.Windows.Forms.PictureBox pictureBox1;
+            private System.Windows.Forms.PictureBox pictureBox2;
+            private System.Windows.Forms.PictureBox pictureBox3;
+            private System.Windows.Forms.PictureBox pictureBox4;
+            private System.Windows.Forms.PictureBox pictureBox5;
+            private System.Windows.Forms.PictureBox pictureBox6;
+            private System.Windows.Forms.PictureBox pictureBox7;
+            private System.Windows.Forms.PictureBox pictureBox8;
+            private System.Windows.Forms.PictureBox pictureBox9;
+            private System.Windows.Forms.PictureBox pictureBox10;
+            private System.Windows.Forms.PictureBox pictureBox11;
+            private System.Windows.Forms.PictureBox pictureBox12;
+            private System.Windows.Forms.PictureBox pictureBox13;
+            private System.Windows.Forms.PictureBox pictureBox14;
+            private System.Windows.Forms.PictureBox pictureBox15;
+            private System.Windows.Forms.PictureBox pictureBox16;
+            private System.Windows.Forms.PictureBox pictureBox17;
+            private System.Windows.Forms.PictureBox pictureBox18;
+            private System.Windows.Forms.PictureBox pictureBox19;
+            private System.Windows.Forms.PictureBox pictureBox20;
+            private System.Windows.Forms.PictureBox pictureBox21;
+            private System.Windows.Forms.PictureBox pictureBox22;
+            private System.Windows.Forms.PictureBox pictureBox23;
+            private System.Windows.Forms.PictureBox pictureBox24;
+            private System.Windows.Forms.PictureBox pictureBox25;
+            private System.Windows.Forms.PictureBox pictureBox26;
+            private System.Windows.Forms.PictureBox pictureBox27;
+            private System.Windows.Forms.PictureBox pictureBox28;
+            private System.Windows.Forms.PictureBox pictureBox29;
+            private System.Windows.Forms.PictureBox pictureBox30;
+            private System.Windows.Forms.PictureBox pictureBox31;
+            private System.Windows.Forms.PictureBox pictureBox32;
+            private System.Windows.Forms.PictureBox pictureBox33;
+            private System.Windows.Forms.PictureBox pictureBox34;
+            private System.Windows.Forms.PictureBox pictureBox35;
+            private System.Windows.Forms.PictureBox pictureBox36;
+            private System.Windows.Forms.Button button1;
+            private System.Windows.Forms.Button button2;
+            private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+            private System.Windows.Forms.ColorDialog colorDialog1;
+            private ColorMapHue colorMapHue1;
+            private ColorMap colorMap;
+            private System.Windows.Forms.PictureBox colorPreview;
+      }
 }

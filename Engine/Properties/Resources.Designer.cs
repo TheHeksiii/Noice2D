@@ -59,15 +59,5 @@ namespace Engine.Properties {
                 resourceCulture = value;
             }
         }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        internal static System.Drawing.Bitmap ParticleTexture {
-            get {
-                object obj = ResourceManager.GetObject("ParticleTexture", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
     }
 }

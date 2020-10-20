@@ -47,26 +47,26 @@ namespace Engine
         {
             return Vector2.Distance(ClosestPointOnLine(lineStart, lineEnd, point), point);
         }
-        public static (bool intersects, float distance) In(this Vector2 point, Collider collider)
+        public static (bool intersects, float distance) In(this Vector2 point, Scripts.Shape shape)
         {
             bool isIn = false;
             float distance = 0;
-            switch (collider)
+            switch (shape)
             {
-                case LineCollider lineCollider:
+                case LineShape lineCollider:
                     if ((distance = DistanceFromLine(lineCollider.GetLineStart(), lineCollider.GetLineEnd(), point)) <
                         lineCollider.GetComponent<LineRenderer>().StrokeSize)
                     {
                         isIn = true;
                     }
                     break;
-                case CircleCollider circleCollider:
+                case CircleShape circleCollider:
                     if ((distance = Vector2.Distance(circleCollider.transform.Position, point)) < circleCollider.Radius)
                     {
                         isIn = true;
                     }
                     break;
-                case BoxCollider boxCollider:
+                case BoxShape boxCollider:
                     var boxPosition = boxCollider.rect.Center;
 
                     Vector2 boxCenter = boxCollider.rect.Center;
@@ -99,31 +99,31 @@ namespace Engine
                 rb2Position = (Vector2)rb2Pos;
             }
 
-            if (rb1.collider is CircleCollider && rb2.collider is CircleCollider)
+            if (rb1.shape is CircleShape && rb2.shape is CircleShape)
             {
                 float dist = Vector2.Distance(rb1Position, rb2Position);
-                return (dist < rb1.GetComponent<CircleCollider>().Radius + rb2.GetComponent<CircleCollider>().Radius, dist);
+                return (dist < rb1.GetComponent<CircleShape>().Radius + rb2.GetComponent<CircleShape>().Radius, dist);
             }
-            else if (rb1.collider is BoxCollider && rb2.collider is BoxCollider)
+            else if (rb1.shape is BoxShape && rb2.shape is BoxShape)
             {
-                return (((BoxCollider)rb1.collider).rect.Intersects(((BoxCollider)rb2.collider).rect), 0);
+                return (((BoxShape)rb1.shape).rect.Intersects(((BoxShape)rb2.shape).rect), 0);
             }
-            else if (rb1.collider is CircleCollider && rb2.collider is LineCollider)
+            else if (rb1.shape is CircleShape && rb2.shape is LineShape)
             {
-                var dist = Vector2.Distance(ClosestPointOnLine(rb2.GetComponent<LineCollider>().GetLineStart(), rb2.GetComponent<LineCollider>().GetLineEnd(), rb1Position), rb1Position);
-                return (dist <= rb1.GetComponent<CircleCollider>().Radius, dist);
+                var dist = Vector2.Distance(ClosestPointOnLine(rb2.GetComponent<LineShape>().GetLineStart(), rb2.GetComponent<LineShape>().GetLineEnd(), rb1Position), rb1Position);
+                return (dist <= rb1.GetComponent<CircleShape>().Radius, dist);
             }
-            else if (rb2.collider is CircleCollider && rb1.collider is LineCollider)
+            else if (rb2.shape is CircleShape && rb1.shape is LineShape)
             {
-                var dist = Vector2.Distance(ClosestPointOnLine(rb1.GetComponent<LineCollider>().GetLineStart(), rb1.GetComponent<LineCollider>().GetLineEnd(), rb2Position), rb2Position);
-                return (dist <= rb2.GetComponent<CircleCollider>().Radius, dist);
+                var dist = Vector2.Distance(ClosestPointOnLine(rb1.GetComponent<LineShape>().GetLineStart(), rb1.GetComponent<LineShape>().GetLineEnd(), rb2Position), rb2Position);
+                return (dist <= rb2.GetComponent<CircleShape>().Radius, dist);
             }
 
-            else if ((rb2.collider is BoxCollider && rb1.collider is LineCollider) || rb2.collider is LineCollider && rb1.collider is BoxCollider)
+            else if ((rb2.shape is BoxShape && rb1.shape is LineShape) || rb2.shape is LineShape && rb1.shape is BoxShape)
             {
-                BoxCollider boxCollider = (BoxCollider)(rb2.collider is BoxCollider ? rb2.collider : rb1.collider);
+                BoxShape boxCollider = (BoxShape)(rb2.shape is BoxShape ? rb2.shape : rb1.shape);
 
-                LineCollider lineCollider = (LineCollider)(rb2.collider is LineCollider ? rb2.collider : rb1.collider);
+                LineShape lineCollider = (LineShape)(rb2.shape is LineShape ? rb2.shape : rb1.shape);
 
                 List<Vector2[]> lines = new List<Vector2[]>() {
                     new Vector2[2] { boxCollider.transform.Position, boxCollider.transform.Position + new Vector2(boxCollider.rect.Width, 0) }, // UP
@@ -140,10 +140,10 @@ namespace Engine
                 }
             }
 
-            else if (rb2.collider is LineCollider && rb1.collider is LineCollider)
+            else if (rb2.shape is LineShape && rb1.shape is LineShape)
             {
-                return (LinesIntersecting(((LineCollider)rb1.collider).GetLineStart(), ((LineCollider)rb1.collider).GetLineEnd(),
-                    ((LineCollider)rb2.collider).GetLineStart(), ((LineCollider)rb2.collider).GetLineEnd()), 0);
+                return (LinesIntersecting(((LineShape)rb1.shape).GetLineStart(), ((LineShape)rb1.shape).GetLineEnd(),
+                    ((LineShape)rb2.shape).GetLineStart(), ((LineShape)rb2.shape).GetLineEnd()), 0);
 
 
 

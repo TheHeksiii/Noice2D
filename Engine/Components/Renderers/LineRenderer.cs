@@ -9,11 +9,11 @@ namespace Scripts
         public bool lineStarted = false;
 
         [LinkableComponent]
-        public LineCollider lineCollider;
+        public LineShape lineCollider;
 
         public override void Awake()
         {
-            lineCollider = GetComponent<LineCollider>();
+            lineCollider = GetComponent<LineShape>();
             base.Awake();
         }
         public override void Draw(SpriteBatch batch)

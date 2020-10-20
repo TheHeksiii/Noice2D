@@ -10,7 +10,7 @@ namespace Scripts
         public Stack<GameObject> usedObjects = new Stack<GameObject>();
         private void AddNewObject()
         {
-            GameObject gameObject = new GameObject(name: "Pooled object");
+            GameObject gameObject = GameObject.Create(name: "Pooled object");
             for (int i = 0; i < model.Components.Count; i++)
             {
                 gameObject.AddComponent(model.Components[i].GetType());

@@ -26,7 +26,6 @@ namespace Editor
             /// LockBitmap is only used in 
             /// </summary>
             LockBitmap lockBitmap;
-            SolidBrush brush = new SolidBrush(Color.White);
 
             private Point dotPosition = new Point(0, 0);
             private Color penColor;
@@ -41,11 +40,11 @@ namespace Editor
 
                         Parallel.For(0, Size.Height, new Action<int>((y) =>
                         {
-                              Parallel.For(0, Size.Height, new Action<int>((x) =>
+                              Parallel.For(0, Size.Width, new Action<int>((x) =>
                       {
-                                  Color rgb = Extensions.ColorFromHSV(hue, (float)x / Size.Width, (float)y / Size.Height);
-                                  lockBitmap.SetPixel(x, y, rgb);
-                            }));
+                            Color rgb = Extensions.ColorFromHSV(hue, (float)x / Size.Width, (float)y / Size.Height);
+                            lockBitmap.SetPixel(x, y, rgb);
+                      }));
                         }));
                         lockBitmap.UnlockBits();
                   }
@@ -124,8 +123,8 @@ namespace Editor
             {
                   if (e.Button == MouseButtons.Left)
                   {
-                        var x = Extensions.Clamp(e.Location.X, 0, base.Size.Width - 1);
-                        var y = Extensions.Clamp(e.Location.Y, 0, base.Size.Height - 1);
+                        var x = Extensions.Clamp(e.Location.X, 0, bitmap.Width - 1);
+                        var y = Extensions.Clamp(e.Location.Y, 0, bitmap.Height - 1);
                         dotPosition = new Point(x, y);
                         UpdateColorMap();
                         Invalidate();

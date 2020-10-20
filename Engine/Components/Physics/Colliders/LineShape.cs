@@ -2,7 +2,7 @@
 using System;
 namespace Scripts
 {
-    public class LineCollider : Collider
+    public class LineShape : Shape
     {
         //[ShowInEditor]
         //[System.ComponentModel.Editor(typeof(Editor.MethodEditor), typeof(System.Drawing.Design.UITypeEditor))]

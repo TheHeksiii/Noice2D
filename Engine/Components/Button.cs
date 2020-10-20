@@ -1,48 +1,60 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using Scripts;
+using Engine.UI;
+using System.Xml.Serialization;
 
 namespace Engine
 {
-    public class Button : Component
-    {
-        public delegate void OnClickedAction();
-        OnClickedAction onClickedAction;
-        ShapeRenderer sprite;
-        public override void Awake()
-        {
-            //onClickedAction += ChangeColorOnClick;
-            //sprite = gameObject.GetComponent<ShapeRenderer>();
+	public class Button : Component
+	{
+		public override bool AllowMultiple { get; set; } = false;
 
-        }
+		public delegate void MouseAction();
+		[XmlIgnore] MouseAction onClickedAction;
+		[XmlIgnore] public MouseAction onReleasedAction;
 
-        public override void Update()
-        {
+		[LinkableComponent]
+		public Renderer renderer;
+		[LinkableComponent]
+		public Shape collider;
+		bool mouseIsOver = false;
+		bool clicked = false;
+		public override void Awake()
+		{
+			onClickedAction += () => renderer.Color = Color.Red;
+			onReleasedAction += () => renderer.Color = Color.White;
+			base.Awake();
 
-            /*if (cam.ScreenToWorld(Mouse.GetState().Position).In(
-                gameObject.transform.position,
-                sprite.texture2D.Width,
-                sprite.texture2D.Height) == true)
-            {
-                sprite.color = Color.Red;
-                mouseIsOver = true;
-            }
-            else
-            {
-                sprite.color = Color.White;
-                mouseIsOver = false;
-            }
-            //gameObject.transform.position = Vector2.Lerp(gameObject.transform.position,Mouse.GetState().Position, 0.1f);
-            if (mouseIsOver == true && Mouse.GetState().LeftButton == ButtonState.Pressed)
-            {
-                //just wanted to place button,but maybe still interactable,whatever
-                //active = false;
-                onClickedAction.Invoke();
-            }*/
-        }
 
-        public void ChangeColorOnClick()
-        {
-            sprite.Color = Color.Cyan;
-        }
-    }
+			GameObject.AddComponent<ButtonTween>().Awake();
+		}
+
+		public override void Update()
+		{
+			if (renderer == false || collider == false) { return; }
+			mouseIsOver = Camera.Instance.ScreenToWorld(MouseInput.Position).In(collider).intersects;
+
+			if (clicked == false)
+			{
+				renderer.Color = mouseIsOver ? Color.Gray : Color.White;
+			}
+
+			if (clicked && mouseIsOver == false) // up event when me move out of button bounds, even when clicked
+			{
+				OnMouse1Up();
+			}
+		}
+
+		public override void OnMouse1Down()
+		{
+			onClickedAction?.Invoke();
+			clicked = true;
+		}
+		public override void OnMouse1Up()
+		{
+			clicked = false;
+			onReleasedAction?.Invoke();
+		}
+	}
 }
