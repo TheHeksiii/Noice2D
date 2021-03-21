@@ -43,10 +43,6 @@ namespace Scripts
 			return localPoint + transform.Position;
 		}
 
-		public Vector2 TransformToLocal(Vector2 worldPoint)
-		{
-			return worldPoint - transform.Position;
-		}
 		// Callbacks
 		private void RegisterInputCallbacks()
 		{

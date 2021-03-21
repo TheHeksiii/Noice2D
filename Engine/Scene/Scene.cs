@@ -12,7 +12,7 @@ namespace Engine
 	public class Scene : Game
 	{
 		public string scenePath = "";
-		public TransformHandle transformHandle { get { return TransformHandle.GetInstance(); } }
+		public TransformHandle transformHandle;
 		private ColliderEditor colliderEditor;
 		public SpriteFont spriteFont;
 		private Camera camera { get { return Camera.Instance; } }
@@ -35,16 +35,6 @@ namespace Engine
 		public float updateTime = 0;
 		public float renderTime = 0;
 
-		float spawnTimer = 0.1f;
-		float gridChangeTimer = 0.5f;
-		bool drawingLine = false;
-		bool drawingBox = false;
-		bool drawingPolygon = false;
-		GameObject line;
-		GameObject box;
-		int scrollValue = 0;
-		GameObject image;
-
 		public Scene()
 		{
 			Instance = this;
@@ -57,7 +47,7 @@ namespace Engine
 				PreferredBackBufferHeight = 600,
 				//PreferMultiSampling = true,
 				SynchronizeWithVerticalRetrace = false,
-				
+
 				//GraphicsProfile = GraphicsProfile.HiDef
 			};
 			graphics.ApplyChanges();
@@ -76,11 +66,8 @@ namespace Engine
 		private void CreateDefaultObjects()
 		{
 			colliderEditor = new ColliderEditor();
-			GameObject transformHandleGameObject = GameObject.Create(_silent: true);
-			transformHandleGameObject.AddComponent<TransformHandle>();
-			transformHandleGameObject.Name = "Transform Handle";
-			transformHandleGameObject.Active = false;
 
+			CreateTransformHandle();
 			var CameraGO = GameObject.Create(name: "Camera");
 			CameraGO.AddComponent<Camera>();
 			for (int i = 0; i < gameObjects.Count; i++)
@@ -95,20 +82,26 @@ namespace Engine
 			renderer.transform.Position = new Vector3(renderer.texture.Width / 2, renderer.texture.Height / 2, 0);
 			image.Awake();*/
 		}
-		public void SelectGameObject(GameObject gameObject)
+		void CreateTransformHandle()
+		{
+			GameObject transformHandleGameObject = GameObject.Create(_silent: true);
+			transformHandle = transformHandleGameObject.AddComponent<TransformHandle>();
+			transformHandleGameObject.Name = "Transform Handle";
+			transformHandleGameObject.Active = false;
+			transformHandleGameObject.Awake();
+		}
+		public void SelectGameObject(GameObject go)
 		{
 			for (int i = 0; i < gameObjects.Count; i++)
 			{
-				if (gameObjects[i].ID != gameObject.ID)
+				if (gameObjects[i].ID != go.ID)
 				{
 					gameObjects[i].selected = false;
 				}
 			}
-			gameObject.selected = true;
+			go.selected = true;
 
-			transformHandle.transform.Position = gameObject.transform.Position;
-			transformHandle.selectedTransform = gameObject.transform;
-			transformHandle.objectSelected = true;
+			transformHandle.SelectObject(go);
 		}
 		public SpriteBatch CreateSpriteBatch()
 		{
@@ -149,11 +142,13 @@ namespace Engine
 		{
 			SceneFile sf = new SceneFile();
 			sf.Components = new List<Component>();
+			sf.GameObjects = new List<GameObject>();
 			for (int i = 0; i < gameObjects.Count; i++)
 			{
+				if (gameObjects[i] == transformHandle.GameObject) continue;
 				sf.Components.AddRange(gameObjects[i].Components);
+				sf.GameObjects.Add(gameObjects[i]);
 			}
-			sf.GameObjects = gameObjects;
 			sf.gameObjectNextID = IDsManager.gameObjectNextID;
 			return sf;
 		}
@@ -232,6 +227,9 @@ namespace Engine
 				sceneFile.GameObjects[i].Awake();
 			}
 
+			CreateTransformHandle();
+
+
 			SceneLoad?.Invoke(this, null);
 
 			scenePath = path;
@@ -307,7 +305,8 @@ namespace Engine
 				}
 				else if (transformHandle.clicked == false)
 				{
-					transformHandle.objectSelected = false;
+					// todo uncomment
+					//transformHandle.SelectObject(null);
 				}
 			}
 		}
@@ -321,7 +320,6 @@ namespace Engine
 
 			if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
 				Exit();
-			scrollValue = Mouse.GetState().ScrollWheelValue;
 		}
 		protected override void Update(GameTime gameTime)
 		{

@@ -47,7 +47,9 @@ namespace Engine
                   {
                         return
                         Matrix.CreateScale(new Vector3(Zoom, Zoom, 1)) *
-                        Matrix.CreateRotationZ(transform.Rotation) *
+                        Matrix.CreateRotationX(transform.Rotation.X) *
+                        Matrix.CreateRotationY(transform.Rotation.Y) *
+                        Matrix.CreateRotationZ(transform.Rotation.Z) *
                         Matrix.CreateTranslation(-(int)transform.Position.X,
                            -(int)transform.Position.Y, 0);
                         //Matrix.CreateRotationZ(Rotation);

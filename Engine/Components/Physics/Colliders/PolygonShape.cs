@@ -75,10 +75,10 @@ namespace Scripts
             float lastRotation = 0;
             public override void Update()
             {
-                  if (transform.Rotation != lastRotation)
+                  if (transform.Rotation.Z != lastRotation)
                   {
-                        SetRotation(transform.Rotation);
-                        lastRotation = transform.Rotation;
+                        SetRotation(transform.Rotation.Z);
+                        lastRotation = transform.Rotation.Z;
 
                   }
                   base.Update();

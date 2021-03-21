@@ -38,7 +38,7 @@ namespace Scripts
                 texture: texture,
                 position: transform.Position, sourceRectangle: null,
                 color: this.Color,
-                rotation: -transform.Rotation,
+                rotation: -transform.Rotation.Z,
                 origin: new Vector2(transform.Anchor.X * texture.Width, transform.Anchor.Y * texture.Height),
                 scale: transform.Scale.Abs(),
                 effects: RenderingHelpers.GetSpriteFlipEffects(transform),
@@ -50,10 +50,10 @@ namespace Scripts
         {
             texturePath = _path;
 
-			if (boxShape?.AutomaticSize==true)
+			/*if (boxShape?.AutomaticSize==true)
 			{
 				boxShape.Size = new Vector2(_texture.Width, _texture.Height);
-			}
+			}*/
         }
 
     }

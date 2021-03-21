@@ -717,11 +717,14 @@ namespace Editor
 								sfd.FilterIndex = 0;
 								if (sfd.ShowDialog() == DialogResult.OK)
 								{
-									Serializer.GetInstance().SaveGameObjects(new SceneFile()
+									Serializer.GetInstance().SaveGameObjects(
+										scene.GetSceneFile()
+									/*	new SceneFile()
 									{
 										GameObjects = new List<GameObject>() { InspectorWindow.SelectedObject as GameObject },
 										Components = (InspectorWindow.SelectedObject as GameObject).Components
-									}, sfd.FileName, isPrefab: true);
+									}*/, 
+										sfd.FileName, isPrefab: true);
 								}
 							}
 						});

@@ -60,7 +60,7 @@ namespace Scripts
 					{
 						//particles[i].velocity -= Physics.gravity * Time.deltaTime;
 
-						particles[i].position += particles[i].velocity * Time.deltaTime;
+						particles[i].localPosition += particles[i].velocity * Time.deltaTime;
 
 						particles[i].lifetime += Time.deltaTime;
 
@@ -87,7 +87,7 @@ namespace Scripts
 		}
 		void SpawnParticle()
 		{
-			Particle p = pool.GetObject();
+			/*Particle p = pool.GetObject();
 			latestParticle = p;
 			p.visible = true;
 			p.lifetime = 0;
@@ -95,19 +95,20 @@ namespace Scripts
 			//float sineY = (float)Math.Sin(Time.elapsedTime * 4) * 200 * (Extensions.Clamp((float)Math.Abs(Math.Sin(Time.elapsedTime)), 0.6f, 1f));
 			//float sineX = (float)Math.Cos(Time.elapsedTime * 4) * 200 * (Extensions.Clamp((float)Math.Abs(Math.Cos(Time.elapsedTime)), 0.6f, 1f));
 
-			Vector2 center = Camera.Instance.Size / 2 + Camera.Instance.transform.Position;
+			Vector3 center = Camera.Instance.Size / 2 + Camera.Instance.transform.Position;
 
 			float sineX = (float)Math.Cos(Time.elapsedTime * speed) * radius;
 			float sineY = (float)Math.Sin(Time.elapsedTime * speed) * radius;
 
 			Vector2 wiggle = new Vector2(sineX, sineY).NormalizedCopy() * (float)Math.Sin(Time.elapsedTime * 25) * 10;
 
-			if (Vector2.Distance(lastMousePos, center + new Vector2(sineX, sineY)) < 250)
+			if (Vector3.Distance(lastMousePos, center + new Vector3(sineX, sineY)) < 250)
 			{
 				wiggle *= 0;
 			}
 
-			p.position = MouseInput.Position-transform.Position;//new Vector2(center.X + sineX + wiggle.X, center.Y + sineY + wiggle.Y);
+			//p.position = Engine.MouseInput.Position- transform.Position;//new Vector2(center.X + sineX + wiggle.X, center.Y + sineY + wiggle.Y);
+			p.localPosition = Vector2.Zero;//new Vector2(center.X + sineX + wiggle.X, center.Y + sineY + wiggle.Y);
 
 			p.velocity = StartVelocity + new Vector2(rnd.Next((int)-StartVelocityVariation, (int)StartVelocityVariation), rnd.Next((int)-StartVelocityVariation, (int)StartVelocityVariation));
 			//p.velocity = (lastMousePos - MouseInput.Position).NormalizedCopy() * 80;
@@ -127,12 +128,13 @@ namespace Scripts
 						particles.RemoveAt(i);
 					}
 					//particles.RemoveRange(0, particles.Count - MaxParticles);*/
-			}
 		}
 
-		//}
 	}
+
+	//}
 }
+
 
 #region BACKUP
 //using System;

@@ -9,7 +9,7 @@ namespace Engine
 {
 	public static class Physics
 	{
-		public static readonly Vector2 gravity = new Vector2(0, -200);
+		public static readonly Vector3 gravity = new Vector3(0, -200,0);
 		public static List<Rigidbody> rigidbodies = new List<Rigidbody>();
 
 
@@ -44,7 +44,7 @@ namespace Engine
 		{
 			for (int i = 0; i < rigidbodies.Count; i++)
 			{
-				rigidbodies[i].Velocity = Vector2.Zero;
+				rigidbodies[i].Velocity = Vector3.Zero;
 			}
 		}
 		public static void StopPhysics()
@@ -237,8 +237,9 @@ namespace Engine
 		}
 		static void CorrectVelocityCircleLine(Rigidbody circle, Rigidbody line)
 		{
-			Vector2 oldVelocity = circle.Velocity;
-			Vector2 circleDir = circle.Velocity;
+			return;
+			/*Vector3 oldVelocity = circle.Velocity;
+			Vector3 circleDir = circle.Velocity;
 			circleDir.Normalize();
 
 			Vector2 circleRB_NextFramePosition = circle.GetPositionOnNextFrame();
@@ -269,7 +270,7 @@ namespace Engine
 			circle.Velocity = gravity * Time.fixedDeltaTime + ((circle.transform.Position * lineDir * lineDir.Y) - circle.transform.Position) * Time.deltaTime;
 
 			//circle.Velocity =gravity * Time.deltaTime + new Vector2(0, -lineDir.Y * 100);
-
+*/
 
 		}
 		public static void FixedUpdate()

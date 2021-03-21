@@ -55,6 +55,7 @@ namespace Engine
 		[ShowInEditor] public string Name { get; set; } = "";
 		public bool selected = false;
 		public bool silent = false;
+
 		public bool Active { get; set; } = true;
 
 		//[System.Xml.Serialization.XmlArrayItem(type: typeof(Component))]
@@ -141,10 +142,7 @@ namespace Engine
 
 					Type sourceType1 = Components[index1].GetType();
 					Type sourceType2 = Components[index2].GetType();
-					if (sourceType1.Name == "Rigidbody" && GetComponent<TransformHandle>() == null)
-					{
-						var a = 0;
-					}
+
 					FieldInfo fieldInfo = null;
 					FieldInfo[] infos = sourceType1.GetFields();
 					for (int i = 0; i < infos.Length; i++)
@@ -473,11 +471,11 @@ namespace Engine
 			}
 		}
 
-		public Vector2 TransformToWorld(Vector2 localPoint)
+		public Vector3 TransformToWorld(Vector3 localPoint)
 		{
 			return localPoint + transform.Position;
 		}
-		public Vector2 TransformToLocal(Vector2 worldPoint)
+		public Vector3 TransformToLocal(Vector3 worldPoint)
 		{
 			return worldPoint - transform.Position;
 		}

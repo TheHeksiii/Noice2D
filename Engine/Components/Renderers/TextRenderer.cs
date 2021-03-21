@@ -12,8 +12,10 @@ namespace Scripts
             public override void Draw(SpriteBatch batch)
             {
                   if (GameObject == null) { return; }
+                  if (text == null) { return; }
+
                   batch.DrawString(Scene.Instance.spriteFont, text.Value,
-                              transform.Position, Color, transform.Rotation, Vector2.Zero, transform.Scale, SpriteEffects.None, 0);
+                              transform.Position, Color, transform.Rotation.Z, Vector2.Zero, transform.Scale, SpriteEffects.None, 0);
             }
       }
 }

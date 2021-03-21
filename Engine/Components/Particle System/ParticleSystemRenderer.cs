@@ -53,7 +53,7 @@ namespace Scripts
 
 				if (particleSystem.particles.Count > i && particleSystem.particles[i] != null && particleSystem.particles[i].visible)
 				{
-					circle.Center = particleSystem.particles[i].position + transform.Position;
+					circle.Center = particleSystem.particles[i].localPosition + transform.LocalPosition;
 
 					circle.Radius = particleSystem.particles[i].radius*transform.Scale.X;
 

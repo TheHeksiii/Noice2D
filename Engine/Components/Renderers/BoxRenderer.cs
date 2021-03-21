@@ -15,9 +15,9 @@ namespace Scripts
 		public override void Draw(SpriteBatch batch)
 		{
 			if (GameObject == null || boxCollider == null) { return; }
-			RectangleF drawRect = new RectangleF(transform.Position,boxCollider.rect.Size);
+			RectangleF drawRect = new RectangleF(transform.Position.ToPoint2(),boxCollider.rect.Size);
 
-			drawRect.Size *= transform.Scale;
+			drawRect.Size *= transform.Scale.ToVector2();
 			drawRect.Offset(-boxCollider.rect.Size.Width * transform.Anchor.X, -boxCollider.rect.Size.Height * transform.Anchor.Y);
 
 			if (Fill)

@@ -115,7 +115,7 @@ namespace Engine
                         }
 
                         newPointIndex = newPointIndex + 1 >= polygonCollider.Points.Count ? 0 : newPointIndex + 1;
-                        polygonCollider.Points.Insert(newPointIndex, polygonCollider.TransformToLocal(MouseInput.Position));
+                        polygonCollider.Points.Insert(newPointIndex, polygonCollider.transform.TransformVector(MouseInput.Position));
                         polygonCollider.BuildEdges();
 
                         //polygonCollider.localPoints.Insert(newPointIndex,MouseInput.Position-polygonCollider.Transform.Position);
@@ -213,7 +213,7 @@ namespace Engine
                               selectedPoint.transform.Position = (MouseInput.Position + offset);
                         }
                         //polygonCollider.localPoints[verticeGameObjects.IndexOf(selectedPoint)] = selectedPoint.GetComponent<BoxCollider>().rect.Center - polygonCollider.Transform.Position;
-                        polygonCollider.Points[verticeGameObjects.IndexOf(selectedPoint)] = polygonCollider.TransformToLocal(MouseInput.Position) + verticeBoxOffset + offset;
+                        polygonCollider.Points[verticeGameObjects.IndexOf(selectedPoint)] = polygonCollider.transform.TransformVector(MouseInput.Position) + verticeBoxOffset + offset;
                   }
                   else// no point selected
                   {
@@ -251,7 +251,7 @@ namespace Engine
                               if (Vector2.Distance(pointOnLine, MouseInput.Position) < 10) // dont do anything if we are too far away from line
                               {
                                     dynamicVertex.Active = true;
-                                    dynamicVertex.transform.Position = (pointOnLine.ToSize() - dynamicVertex.GetComponent<BoxShape>().rect.Size / 2);
+                                    dynamicVertex.transform.Position = (pointOnLine - (dynamicVertex.GetComponent<BoxShape>().rect.Size / 2).ToVector2());
                               }
                               else
                               {

@@ -20,7 +20,7 @@ namespace Scripts
             }
             else
             {
-                return transform.Position + new Vector2((float)Math.Cos(transform.Rotation), (float)Math.Sin(transform.Rotation));
+                return transform.Position + new Vector2((float)Math.Cos(transform.Rotation.Z), (float)Math.Sin(transform.Rotation.Z));
             }
         }
         public Vector2 GetLineEnd()
@@ -31,7 +31,7 @@ namespace Scripts
             }
             else
             {
-                return transform.Position + new Vector2(-(float)Math.Cos(transform.Rotation), (float)Math.Sin(transform.Rotation)) * length;
+                return transform.Position + new Vector2(-(float)Math.Cos(transform.Rotation.Z), (float)Math.Sin(transform.Rotation.Z)) * length;
             }
         }
 

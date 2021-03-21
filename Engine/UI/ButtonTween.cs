@@ -32,16 +32,16 @@ namespace Engine.UI
 			if (needToScale == false) { return; }
 			if (clicked)
 			{
-				transform.Scale = Vector2.Lerp(transform.Scale, Vector2.One * scaleTarget, Time.deltaTime * scaleSpeed);
-				if (transform.Scale == Vector2.One * scaleTarget)
+				transform.Scale = Vector3.Lerp(transform.Scale, Vector3.One * scaleTarget, Time.deltaTime * scaleSpeed);
+				if (transform.Scale == Vector3.One * scaleTarget)
 				{
 					needToScale = false;
 				}
 			}
 			else
 			{
-				transform.Scale = Vector2.Lerp(transform.Scale, Vector2.One, Time.deltaTime * scaleSpeed);
-				if (transform.Scale == Vector2.One)
+				transform.Scale = Vector3.Lerp(transform.Scale, Vector3.One, Time.deltaTime * scaleSpeed);
+				if (transform.Scale == Vector3.One)
 				{
 					needToScale = false;
 				}
@@ -56,7 +56,7 @@ namespace Engine.UI
 		}
 		public override void OnMouse1Up()
 		{
-			transform.Scale = Vector2.One * scaleTarget;
+			transform.Scale = Vector3.One * scaleTarget;
 
 			clicked = false;
 			needToScale = true;

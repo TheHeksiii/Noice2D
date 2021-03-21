@@ -60,6 +60,10 @@
     <StartupObject>Launcher.Program</StartupObject>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="MonoGame.Framework, Version=3.8.0.1641, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\MonoGame\MonoGame.Framework\obj\WindowsDX\Debug\net452\MonoGame.Framework.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.Configuration" />
@@ -162,9 +166,6 @@
       <Version>1.16.30</Version>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
-    </PackageReference>
-    <PackageReference Include="MonoGame.Framework.WindowsDX">
-      <Version>3.8.0.1641</Version>
     </PackageReference>
     <PackageReference Include="Newtonsoft.Json">
       <Version>12.0.3</Version>

@@ -17,7 +17,7 @@ namespace Scripts
 		[ShowInEditor] public bool IsStatic { get; set; } = false;
 		[ShowInEditor] public bool IsTrigger { get; set; } = false;
 		[ShowInEditor] public bool IsButton { get; set; } = false;
-		[ShowInEditor] public Vector2 Velocity { get; set; } = new Vector2(0, 0);
+		[ShowInEditor] public Vector3 Velocity { get; set; } = new Vector3(0, 0, 0);
 
 		public float velocityDrag = 0.99f;
 		[ShowInEditor] public float Bounciness { get; set; } = 0f;
@@ -65,14 +65,14 @@ namespace Scripts
 
 		}
 
-		public Vector2 GetPositionOnNextFrame(bool ignoreGravity = false)
+		public Vector3 GetPositionOnNextFrame(bool ignoreGravity = false)
 		{
 			if (IsStatic)
 			{
 				return transform.Position;
 			}
-			Vector2 pos = transform.Position;
-			Vector2 vel = new Vector2(Velocity.X, Velocity.Y);
+			Vector3 pos = transform.Position;
+			Vector3 vel = new Vector2(Velocity.X, Velocity.Y);
 
 			if (UseGravity && ignoreGravity == false)
 			{
@@ -99,7 +99,7 @@ namespace Scripts
 		}
 		public void TranslateAngularRotationToTransform()
 		{
-			transform.Rotation += AngularVelocity * Time.fixedDeltaTime;
+			transform.Rotation += new Vector3(0, 0, AngularVelocity * Time.fixedDeltaTime);
 			if (touchingRigidbodies.Count > 0) // only move from rotating, when friciton from other object
 			{
 				transform.Position += new Vector2(AngularVelocity, 0);
